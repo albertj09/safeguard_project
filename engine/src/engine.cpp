@@ -172,6 +172,11 @@ void Scene::UnLoad() {
   setLoaded(false);
 }
 
+Scene* Engine::GetActiveScene()
+{
+    return _activeScene;
+}
+
 void Scene::LoadAsync() { _loaded_future = std::async(&Scene::Load, this); }
 
 sf::Vector2u Engine::getWindowSize() { return _window->getSize(); }

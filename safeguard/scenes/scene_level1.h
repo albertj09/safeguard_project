@@ -11,4 +11,10 @@ public:
   void Update(const double& dt) override;
 
   void Render() override;
+
+private:
+
+	std::vector<std::shared_ptr<Entity>> _enemies;
+	std::shared_ptr<Entity> _purchase_attacktower_btn;
+	float _clickTimeout;
 };

@@ -3,10 +3,12 @@
 #include "ecm.h"
 #include <SFML/Graphics/Shape.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 class SpriteComponent : public Component {
 protected:
   std::shared_ptr<sf::Sprite> _sprite;
+  std::shared_ptr<sf::Texture> _tex;
 
 public:
   SpriteComponent() = delete;
@@ -15,6 +17,7 @@ public:
   void update(double dt) override;
   void render() override;
 
+  void setTexture(std::shared_ptr<sf::Texture> tx) { _tex = tx; _sprite->setTexture(*tx); }
   sf::Sprite& getSprite() const;
 
   template <typename... Targs> void setSprite(Targs... params) {
