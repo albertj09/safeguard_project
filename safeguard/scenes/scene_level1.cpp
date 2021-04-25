@@ -11,7 +11,7 @@
 using namespace std;
 using namespace sf;
 
-std::vector<std::shared_ptr<Entity>> towers;
+
 int money = 1000;
 
 sf::Time delay;
@@ -38,14 +38,12 @@ void Level1Scene::Load() {
   //}
 
 
-
-
-  _purchase_attacktower_btn = create_purchase_tower_button("Attack\nTower\n  $5");
-  _attack_tower = create_tower();
+  //PURCHASE BUTTONS
+  _purchase_attacktower_btn = create_purchase_tower_button_ATTACK("Attack\nTower\n  $5");
 
 
   
-  _clickTimeout = 0.2f;
+  _clickTimeout = 1.0f; //sensible timeout for the buttons
   setLoaded(true);
 
 }
@@ -61,18 +59,26 @@ void Level1Scene::UnLoad() {
 void Level1Scene::Update(const double& dt) {
 
     
-   
+    if (_clickTimeout >= 0.0f) _clickTimeout -= dt;
+
+    if (_clickTimeout < 0.0f) {
+        if (_purchase_attacktower_btn->get_components<ButtonComponent>()[0]->isSelected() && money > 5) {
+            towers.push_back(create_tower_ATTACK());
+            money -= 5;
+            _clickTimeout = 1.0f; //reset the timer after every button click
+            cout << towers.size() << +"VECTOR SIZE" << endl;
+            cout << money << +"GOLD" << endl;
+           
+        }
+    }
     
     
-     
+    if (LevelSystem::getTileAt(Engine::GetWindow().mapPixelToCoords(Mouse::getPosition(Engine::GetWindow()))) == LevelSystem::TOWERSPOTS) {
+        cout << "Indeed a tower spot!";
+    }
     
   
-  if (_purchase_attacktower_btn->get_components<ButtonComponent>()[0]->isSelected() && money > 5) {
-      towers.push_back(_attack_tower);
-      money -= 5;
-      cout << towers.size() << + "VECTOR SIZE" << endl;
-      cout << money << + "GOLD" << endl;     
-  }
+  
 
    Scene::Update(dt);
     

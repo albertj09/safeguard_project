@@ -10,7 +10,7 @@ float LevelSystem::_tileSize(32);
 
 std::map<LevelSystem::Tile, sf::IntRect> LevelSystem::_rectMap{
 	{ EMPTY, IntRect(0, _tileSize, _tileSize, _tileSize) },
-	{ WALL, IntRect(32, 0, _tileSize, _tileSize) },
+	{ WALL, IntRect(32, 128, _tileSize, _tileSize) },
 	{ WAYPOINT, IntRect(192, 128, _tileSize, _tileSize) },
 	{ TOWERSPOTS, IntRect(0, 0, _tileSize, _tileSize) },
 	{ WATER, IntRect(192, 256, _tileSize, _tileSize) }

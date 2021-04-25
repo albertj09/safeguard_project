@@ -17,29 +17,29 @@ using namespace sf;
 
 
 //button to purchase the attack tower
-shared_ptr<Entity> create_purchase_tower_button(string text) {
+shared_ptr<Entity> create_purchase_tower_button_ATTACK(string text) {
 	auto p_t_button = Engine::GetActiveScene()->makeEntity();
 	p_t_button->addTag("purchase_tower_button");
 
-	auto s = p_t_button->addComponent<ShapeComponent>();
+	auto shape = p_t_button->addComponent<ShapeComponent>();
 	
-	s->setShape<RectangleShape>(Vector2f(64.0f, 64.0f));
-	s->getShape().setOrigin(s->getShape().getLocalBounds().width / 2, s->getShape().getLocalBounds().height / 2);
+	shape->setShape<RectangleShape>(Vector2f(64.0f, 64.0f));
+	shape->getShape().setOrigin(shape->getShape().getLocalBounds().width / 2, shape->getShape().getLocalBounds().height / 2);
 	
 
-	auto t = p_t_button->addComponent<TextComponent>(text);
-	t->getText()->setOrigin(64.0f / 2 - 5, t->getText()->getLocalBounds().height / 2 - 15);
-	t->getText()->setColor(Color::Red);
-	t->getText()->setCharacterSize(15.0f);
-	t->getText()->setStyle(sf::Text::Bold);
+	auto text1 = p_t_button->addComponent<TextComponent>(text);
+	text1->getText()->setOrigin(64.0f / 2 - 5, text1->getText()->getLocalBounds().height / 2 - 15);
+	text1->getText()->setColor(Color::Red);
+	text1->getText()->setCharacterSize(15.0f);
+	text1->getText()->setStyle(sf::Text::Bold);
 
 
-	p_t_button->addComponent<ButtonComponent>(s, t);
+	p_t_button->addComponent<ButtonComponent>(shape, text1);
 	p_t_button->setPosition(sf::Vector2f(64.0f, 665.0f));
 	return p_t_button;
 }
 
-shared_ptr<Entity> create_tower() {
+shared_ptr<Entity> create_tower_ATTACK() {
 	auto tower = Engine::GetActiveScene()->makeEntity();
 	tower->addTag("attack_tower");
 
