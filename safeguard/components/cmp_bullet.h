@@ -5,10 +5,13 @@
 class BulletComponent : public Component {
 protected:
   float _lifetime;
+  sf::Vector2f _direction;
+  float _speed;
+  Entity* _tower;
 
 public:
   void update(double dt) override;
   void render() override {}
-  explicit BulletComponent(Entity* p, float lifetime = 3.f);
+  explicit BulletComponent(Entity* p, Entity* tower, sf::Vector2f direction, float speed);
   BulletComponent() = delete;
 };

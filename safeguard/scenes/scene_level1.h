@@ -4,6 +4,7 @@
 
 class Level1Scene : public Scene {
 public:
+	
   void Load() override;
 
   void UnLoad() override;
@@ -16,5 +17,6 @@ private:
 
 	std::vector<std::shared_ptr<Entity>> _enemies;
 	std::shared_ptr<Entity> _purchase_attacktower_btn;
+	std::shared_ptr<Entity> _attack_tower;
 	float _clickTimeout;
 };
