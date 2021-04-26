@@ -43,13 +43,13 @@ shared_ptr<Entity> create_tower_ATTACK() {
 	auto tower = Engine::GetActiveScene()->makeEntity();
 	tower->addTag("attack_tower");
 
-
+	int i;
 	auto spritec = tower->addComponent<SpriteComponent>();
 	auto tex = Resources::get<Texture>("towers.png");
 	spritec->setTexture(tex);
 	spritec->getSprite().setTextureRect(sf::IntRect(13, 180, 50, 50));
 	spritec->getSprite().setScale(sf::Vector2f(2.0f, 2.0f));
-	tower->setPosition(sf::Vector2f(128, 128));
+	//tower->setPosition(sf::Vector2f(128, 128));
 	return tower;
 	
 }
