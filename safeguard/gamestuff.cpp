@@ -42,8 +42,6 @@ shared_ptr<Entity> create_purchase_tower_button_ATTACK(string text) {
 shared_ptr<Entity> create_tower_ATTACK() {
 	auto tower = Engine::GetActiveScene()->makeEntity();
 	tower->addTag("attack_tower");
-
-	int i;
 	auto spritec = tower->addComponent<SpriteComponent>();
 	auto tex = Resources::get<Texture>("towers.png");
 	spritec->setTexture(tex);

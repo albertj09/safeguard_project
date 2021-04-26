@@ -1,9 +1,7 @@
 #pragma once
 
 #include "engine.h"
-#include <map>
 #include <LevelSystem.h>
-#include <unordered_map>
 #include <algorithm>
 
 
@@ -31,6 +29,6 @@ private:
 	bool _towerBeingPlaced;
 	int _index;
 	std::vector<sf::Vector2f> _towerCoords;
-	std::vector<sf::Vector2ul> _nonConvertedTiles;
+	
 	
 };
