@@ -7,21 +7,20 @@
 #include <iostream>
 #include <thread>
 
+
 using namespace std;
 using namespace sf;
 
 
 int money = 1000;
 
-sf::Time delay;
-sf::Clock timer;
-float changeDelay;
+
 
 void Level1Scene::Load() {
   cout << " Scene 1 Load" << endl;
   ls::loadLevelFile("res/level1TEST.txt", 32.0f);
 
-  changeDelay = 1.0f;
+  
  
 
   // Add physics colliders to level tiles.
@@ -42,7 +41,8 @@ void Level1Scene::Load() {
 
 
   
-  _clickTimeout = 1.0f; //sensible timeout for the buttons
+  _clickTimeout = 0.5f; //sensible timeout for the buttons
+  _shootingDelay = 2.0f;
   _towerBeingPlaced = false;
   _index = 0;
 
@@ -68,31 +68,52 @@ void Level1Scene::Update(const double& dt) {
     //Clicking timeout
     if (_clickTimeout >= 0.0f) _clickTimeout -= dt;
 
+    if (_shootingDelay >= 0.0f) _shootingDelay -= dt;
+
     //Match the tower to the mouse cursor while the player is placing it
     if (_towerBeingPlaced == true) {
         _towers[_index].get()->setPosition(cursorPos);
 
     }
 
+    //Towers shoot
+    if (_shootingDelay < 0.0f) {
+        for (auto tower : _attackTowers) {          
+            tower->create_tower_bullet(entity_map[tower].get(), normalize(sf::Vector2f(1.f, 1.f)));
+        }
+
+        _shootingDelay = 2.0f;
+    }
+    
+
     if (_clickTimeout < 0.0f) {
 
         //CLicking on the purchase attack tower button
         if (_purchase_attacktower_btn->get_components<ButtonComponent>()[0]->isSelected() && money > 5 && _towerBeingPlaced == false) {
-            _towers.push_back(create_tower_ATTACK());    
+
+            std::shared_ptr<AttackTower> new_attack_tower;
+
+            //attack tower objects
+            _attackTowers.push_back(new_attack_tower);
+
+            //entities
+            auto newtower = new_attack_tower->create_tower();
+
+            //update map
+            entity_map.insert(pair<std::shared_ptr<AttackTower>, std::shared_ptr<Entity>>(new_attack_tower, newtower));
+            
+            _towers.push_back(newtower);    
             _towerBeingPlaced = true;
-            _clickTimeout = 1.0f; //reset the timer after every button click     
+            _clickTimeout = 0.5f; //reset the timer after every button click     
         }
 
-        
-
-        std::find(_towerCoords.begin(), _towerCoords.end(), LevelSystem::getTilePosition(Vector2ul(Vector2f(cursorPos.x, cursorPos.y) / LevelSystem::getTileSize()))) != _towerCoords.end();
         
         //Clicking on a tower tile
         if (LevelSystem::isOnGrid(cursorPos) && _towerBeingPlaced) {
             if (LevelSystem::getTileAt(cursorPos) == LevelSystem::TOWERSPOTS && Mouse::isButtonPressed(Mouse::Left)) {
                 if (std::find(_towerCoords.begin(), _towerCoords.end(), LevelSystem::getTilePosition(Vector2ul(Vector2f(cursorPos.x, cursorPos.y) / LevelSystem::getTileSize()))) != _towerCoords.end()) {
                     cout << "There's already a tower built here!" << endl;
-                    _clickTimeout = 1.0f;
+                    _clickTimeout = 0.5f;
                 }
                 else {
                     //Set the location of the tower to the center of the tower spot tile
@@ -115,12 +136,12 @@ void Level1Scene::Update(const double& dt) {
                     _towerCoords.push_back(LevelSystem::getTilePosition(Vector2ul(Vector2f(cursorPos.x, cursorPos.y) / LevelSystem::getTileSize())));
                     _index++;
                     _towerBeingPlaced = false;
-                    _clickTimeout = 1.0f;
+                    _clickTimeout = 0.5f;
                 }                              
             }
             else if(Mouse::isButtonPressed(Mouse::Left) && LevelSystem::getTileAt(cursorPos) != LevelSystem::TOWERSPOTS) {
                 cout << "Can't build a tower here!" << endl;
-                _clickTimeout = 1.0f;
+                _clickTimeout = 0.5f;
             }
         }
     }
