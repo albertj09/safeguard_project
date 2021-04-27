@@ -64,7 +64,7 @@ std::shared_ptr<Entity> create_tower_bullet(Entity* tower, Vector2f direction) {
 
 	auto s = e->addComponent<SpriteComponent>(); //create the bullet sprite component
 
-	auto tex1 = Resources::get<Texture>("res/img/enemies.png");
+	auto tex1 = Resources::get<Texture>("enemies.png");
 	//tex1.loadFromFile("res/img/enemies.png");	//load texture sheet 1
 	
 	s->setTexture(tex1);

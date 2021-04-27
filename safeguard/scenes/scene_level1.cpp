@@ -78,10 +78,11 @@ void Level1Scene::Update(const double& dt) {
 
     //Towers shoot
     if (_shootingDelay < 0.0f) {
-        for (auto tower : _attackTowers) {          
-            tower->create_tower_bullet(entity_map[tower].get(), normalize(sf::Vector2f(1.f, 1.f)));
+        if (_towers.size() == _attackTowers.size() && !_towers.empty() && !_attackTowers.empty()) {
+            for (auto set : _towerSets) {
+                set.towerobj->create_tower_bullet(set.entityobj.get(), normalize(sf::Vector2f(1.f, 1.f)));
+            }
         }
-
         _shootingDelay = 2.0f;
     }
     
@@ -98,11 +99,17 @@ void Level1Scene::Update(const double& dt) {
 
             //entities
             auto newtower = new_attack_tower->create_tower();
+            _towers.push_back(newtower);
 
-            //update map
-            entity_map.insert(pair<std::shared_ptr<AttackTower>, std::shared_ptr<Entity>>(new_attack_tower, newtower));
+            //create and add a new tower set (tower obj + its' entity)
+            towerSets newset;
+            newset.towerobj = new_attack_tower;
+            newset.entityobj = newtower;          
+            _towerSets.push_back(newset);
+            cout << "towerSets size: " << + _towerSets.size() << endl;
+                       
             
-            _towers.push_back(newtower);    
+            //misc
             _towerBeingPlaced = true;
             _clickTimeout = 0.5f; //reset the timer after every button click     
         }

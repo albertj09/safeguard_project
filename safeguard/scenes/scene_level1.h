@@ -7,6 +7,10 @@
 #include "../AttackTower.h"
 
 
+struct towerSets {
+	std::shared_ptr<AttackTower> towerobj;
+	std::shared_ptr<Entity> entityobj;
+};
 
 
 
@@ -34,6 +38,8 @@ private:
 	std::vector<sf::Vector2f> _towerCoords;
 	std::vector<std::shared_ptr<AttackTower>> _attackTowers;
 	std::map<std::shared_ptr<AttackTower>, std::shared_ptr<Entity>> entity_map;
+
+	std::vector<towerSets> _towerSets;
 	
 
 	
