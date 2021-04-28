@@ -141,6 +141,7 @@ void Level1Scene::Update(const double& dt) {
             _towerBeingPlaced = false;
             _clickTimeout = 0.5f;
         }
+
        
         
         //Clicking on a tower tile
