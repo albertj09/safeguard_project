@@ -8,10 +8,18 @@ public:
 
 	std::shared_ptr<Entity> create_tower();
 	std::shared_ptr<Entity> create_tower_bullet(Entity* tower, sf::Vector2f direction);
+	void updateTime(double dt);
+	float getFireRateStatus();
+	void setBaseFireRate(float rate);
+	float getBaseFireRate();
+	void setCanFire(bool canFire);
+	bool getCanFire();
 	
 
 protected:
 
-	float _firetime;
+	bool _canFire;
+	float _baseFireRate;
+	float _firerate = _baseFireRate;
 
 };

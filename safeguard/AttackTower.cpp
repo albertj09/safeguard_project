@@ -10,9 +10,38 @@ std::shared_ptr<Entity> AttackTower::create_tower() {
 	spritec->setTexture(tex);
 	spritec->getSprite().setTextureRect(sf::IntRect(13, 180, 50, 50));
 	spritec->getSprite().setScale(sf::Vector2f(2.0f, 2.0f));
-	return tower;
-	upgradeLevel = 1;
+
+	
+	return tower;	
 }
+
+void AttackTower::updateTime(double dt) {
+	if (this->_firerate >= 0.0f) this->_firerate -= (float)dt;
+}
+
+float AttackTower::getFireRateStatus() {
+	return this->_firerate;
+}
+
+void AttackTower::setBaseFireRate(float rate){
+	this->_baseFireRate = rate;
+}
+
+float AttackTower::getBaseFireRate()
+{
+	return this->_baseFireRate;
+}
+
+void AttackTower::setCanFire(bool canFire)
+{
+	this->_canFire = canFire;
+}
+
+bool AttackTower::getCanFire()
+{
+	return this->_canFire;
+}
+
 
 std::shared_ptr<Entity> AttackTower::create_tower_bullet(Entity* tower, sf::Vector2f direction)
 {
@@ -38,6 +67,9 @@ std::shared_ptr<Entity> AttackTower::create_tower_bullet(Entity* tower, sf::Vect
 
 	direction.y *= -1;
 	auto b = e->addComponent<BulletComponent>(tower, direction, 600.0f);
+
+	//reset the firerate back to the default fire rate
+	_firerate = _baseFireRate;
 
 	return e;
 

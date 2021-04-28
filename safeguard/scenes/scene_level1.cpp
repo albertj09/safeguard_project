@@ -40,12 +40,11 @@ void Level1Scene::Load() {
   _purchase_attacktower_btn = create_purchase_tower_button_ATTACK("Attack\nTower\n  $5");
 
 
-  
+  //ADDITIONAL VARIABLES
   _clickTimeout = 0.5f; //sensible timeout for the buttons
-  _shootingDelay = 2.0f;
   _towerBeingPlaced = false;
   _index = 0;
-
+  
 
   setLoaded(true);
 
@@ -68,23 +67,33 @@ void Level1Scene::Update(const double& dt) {
     //Clicking timeout
     if (_clickTimeout >= 0.0f) _clickTimeout -= dt;
 
-    if (_shootingDelay >= 0.0f) _shootingDelay -= dt;
 
     //Match the tower to the mouse cursor while the player is placing it
-    if (_towerBeingPlaced == true) {
-        _towers[_index].get()->setPosition(cursorPos);
-
+    if (_towerBeingPlaced == true && !_towerSets.empty()) {        
+         _towerSets[_index].entityobj.get()->setPosition(cursorPos);
     }
 
-    //Towers shoot
-    if (_shootingDelay < 0.0f) {
-        if (_towers.size() == _attackTowers.size() && !_towers.empty() && !_attackTowers.empty()) {
-            for (auto set : _towerSets) {
+   
+
+    //updateFirerates
+
+    if (!_towerSets.empty()) {
+        for (auto set : _towerSets) {
+            set.towerobj->updateTime(dt);
+        }
+    }
+    
+    
+
+    //Towers shoot based on their respective attributes
+    if (!_towerSets.empty()) {
+        for (auto set : _towerSets) {
+            if (set.towerobj->getFireRateStatus() < 0.0f && set.towerobj->getCanFire()) {
                 set.towerobj->create_tower_bullet(set.entityobj.get(), normalize(sf::Vector2f(1.f, 1.f)));
             }
         }
-        _shootingDelay = 2.0f;
     }
+    
     
 
     if (_clickTimeout < 0.0f) {
@@ -92,14 +101,13 @@ void Level1Scene::Update(const double& dt) {
         //CLicking on the purchase attack tower button
         if (_purchase_attacktower_btn->get_components<ButtonComponent>()[0]->isSelected() && money > 5 && _towerBeingPlaced == false) {
 
-            std::shared_ptr<AttackTower> new_attack_tower;
-
-            //attack tower objects
-            _attackTowers.push_back(new_attack_tower);
+            AttackTower *new_attack_tower = new AttackTower();  //initialize the memory of the object. These objects must be deleted between each scene switch to avoid the memory leaks.
+            new_attack_tower->setBaseFireRate(4.0f);    //Set default fire rate
+            new_attack_tower->setCanFire(false);
 
             //entities
             auto newtower = new_attack_tower->create_tower();
-            _towers.push_back(newtower);
+            
 
             //create and add a new tower set (tower obj + its' entity)
             towerSets newset;
@@ -107,13 +115,33 @@ void Level1Scene::Update(const double& dt) {
             newset.entityobj = newtower;          
             _towerSets.push_back(newset);
             cout << "towerSets size: " << + _towerSets.size() << endl;
-                       
+            
             
             //misc
             _towerBeingPlaced = true;
             _clickTimeout = 0.5f; //reset the timer after every button click     
         }
 
+        //Clicking on an existing tower
+        if (Mouse::isButtonPressed(Mouse::Left) && LevelSystem::getTileAt(cursorPos) == LevelSystem::TOWERSPOTS && !_towerBeingPlaced) {
+            for (auto s : _attackTowerMappingSets) {
+                if (LevelSystem::getTilePosition(Vector2ul(Vector2f(cursorPos.x, cursorPos.y) / LevelSystem::getTileSize())) == s.position) {
+                    s.sets.towerobj->setBaseFireRate(1.0f);
+                    cout << "increased fire rate of tower!" << endl;
+                    _clickTimeout = 0.5f;
+                }
+            }
+        }
+
+        //Cancel buying a tower
+        if (Mouse::isButtonPressed(Mouse::Right) && _towerBeingPlaced) {
+            _towerSets[_index].entityobj.get()->setForDelete(); //delete the tower entity itself
+            delete(_towerSets[_index].towerobj);    //delete the tower object itself
+            _towerSets.erase(_towerSets.begin() + _index);  //delete the vector entry and resize it
+            _towerBeingPlaced = false;
+            _clickTimeout = 0.5f;
+        }
+       
         
         //Clicking on a tower tile
         if (LevelSystem::isOnGrid(cursorPos) && _towerBeingPlaced) {
@@ -127,19 +155,26 @@ void Level1Scene::Update(const double& dt) {
                     Vector2f location = LevelSystem::getTilePosition(Vector2ul(Vector2f(cursorPos.x, cursorPos.y) / LevelSystem::getTileSize()));
                     location.x -= LevelSystem::getTileSize();
                     location.y -= LevelSystem::getTileSize();
-                    _towers[_index].get()->setPosition(location);
+                    _towerSets[_index].entityobj.get()->setPosition(location);                                  
 
-
-
+                    //allow the tower to fire once it has been placed
+                    _towerSets[_index].towerobj->setCanFire(true);  
+                 
                     //update gold amount
                     money -= 5;
 
                     //debug info
                     cout << "\n\nIndeed a tower spot! Tower placed!" << endl;
-                    cout << "Number of total towers: " << +_towers.size() << endl;
+                    cout << "Number of total towers: " << +_towerSets.size() << endl;
                     cout << "Gold: " << +money << endl;
 
+                    //Update Attack Tower Mapping Set
+                    mappingAttackTowerSets newMappingAttackTowerSet;
+                    newMappingAttackTowerSet.position = LevelSystem::getTilePosition(Vector2ul(Vector2f(cursorPos.x, cursorPos.y) / LevelSystem::getTileSize()));
+                    newMappingAttackTowerSet.sets = _towerSets[_index];
+                
                     //misc
+                    _attackTowerMappingSets.push_back(newMappingAttackTowerSet);
                     _towerCoords.push_back(LevelSystem::getTilePosition(Vector2ul(Vector2f(cursorPos.x, cursorPos.y) / LevelSystem::getTileSize())));
                     _index++;
                     _towerBeingPlaced = false;

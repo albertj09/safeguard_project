@@ -5,11 +5,17 @@
 #include <algorithm>
 #include "../tower.h"
 #include "../AttackTower.h"
+#include <map>
 
 
 struct towerSets {
-	std::shared_ptr<AttackTower> towerobj;
+	AttackTower* towerobj;
 	std::shared_ptr<Entity> entityobj;
+};
+
+struct mappingAttackTowerSets {
+	sf::Vector2f position;
+	towerSets sets;
 };
 
 
@@ -27,22 +33,27 @@ public:
 
 private:
 
-	std::vector<std::shared_ptr<Entity>> _towers;
-	std::vector<std::shared_ptr<Entity>> _enemies;
+	//BUTTONS
 	std::shared_ptr<Entity> _purchase_attacktower_btn;
-	std::shared_ptr<Entity> _attack_tower;
+
+
+	//ENEMIES
+	std::vector<std::shared_ptr<Entity>> _enemies;
+	
+
+	//TOWER COORDINATES
+	std::vector<sf::Vector2f> _towerCoords;
+
+	
+	//TOWER MAPPING SETS
+	std::vector<towerSets> _towerSets;
+	std::vector<mappingAttackTowerSets> _attackTowerMappingSets;
+
+
+	//OTHER VARIABLES
 	float _clickTimeout;
-	float _shootingDelay;
 	bool _towerBeingPlaced;
 	int _index;
-	std::vector<sf::Vector2f> _towerCoords;
-	std::vector<std::shared_ptr<AttackTower>> _attackTowers;
-	std::map<std::shared_ptr<AttackTower>, std::shared_ptr<Entity>> entity_map;
-
-	std::vector<towerSets> _towerSets;
-	
-
-	
-	
+		
 	
 };
