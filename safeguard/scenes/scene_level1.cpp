@@ -101,7 +101,7 @@ void Level1Scene::Update(const double& dt) {
         //CLicking on the purchase attack tower button
         if (_purchase_attacktower_btn->get_components<ButtonComponent>()[0]->isSelected() && money > 5 && _towerBeingPlaced == false) {
 
-            AttackTower *new_attack_tower = new AttackTower();  //initialize the memory of the object. These objects must be deleted between each scene switch to avoid the memory leaks.
+            AttackTower* new_attack_tower = new AttackTower();  //initialize the memory of the object. These objects must be deleted between each scene switch to avoid the memory leaks.
             new_attack_tower->setBaseFireRate(4.0f);    //Set default fire rate
             new_attack_tower->setCanFire(false);
 
@@ -112,9 +112,10 @@ void Level1Scene::Update(const double& dt) {
             //create and add a new tower set (tower obj + its' entity)
             towerSets newset;
             newset.towerobj = new_attack_tower;
-            newset.entityobj = newtower;          
+            newset.entityobj = newtower;         
             _towerSets.push_back(newset);
             cout << "towerSets size: " << + _towerSets.size() << endl;
+            
             
             
             //misc

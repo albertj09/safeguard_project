@@ -9,6 +9,18 @@
 
 class Tower {
 
+public:
+	int getUpgradeLevel();
+	void updateTime(double dt);
+	float getFireRateStatus();
+	void setBaseFireRate(float rate);
+	float getBaseFireRate();
+	void setCanFire(bool canFire);
+	bool getCanFire();
+
 protected:
-	int upgradeLevel;
+	int _upgradeLevel;
+	bool _canFire;
+	float _baseFireRate;
+	float _firerate = _baseFireRate;
 };

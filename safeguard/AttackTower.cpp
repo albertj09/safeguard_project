@@ -15,32 +15,6 @@ std::shared_ptr<Entity> AttackTower::create_tower() {
 	return tower;	
 }
 
-void AttackTower::updateTime(double dt) {
-	if (this->_firerate >= 0.0f) this->_firerate -= (float)dt;
-}
-
-float AttackTower::getFireRateStatus() {
-	return this->_firerate;
-}
-
-void AttackTower::setBaseFireRate(float rate){
-	this->_baseFireRate = rate;
-}
-
-float AttackTower::getBaseFireRate()
-{
-	return this->_baseFireRate;
-}
-
-void AttackTower::setCanFire(bool canFire)
-{
-	this->_canFire = canFire;
-}
-
-bool AttackTower::getCanFire()
-{
-	return this->_canFire;
-}
 
 
 std::shared_ptr<Entity> AttackTower::create_tower_bullet(Entity* tower, sf::Vector2f direction)
