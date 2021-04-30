@@ -148,7 +148,7 @@ void Level1Scene::Update(const double& dt) {
                     
                    //--------------------------------------------------------------------------------------
 
-                    create_upgradeInterface_ATTACKTOWER(s.sets.towerobj, s.sets.entityobj.get()->getPosition());
+                    create_upgradeInterface_ATTACKTOWER(s.sets.towerobj, s.sets.entityobj->getPosition());
                     _upgradeInterfaceOpen = true;
                     cout << "Upgrade interface opened!" << endl;
                     _clickTimeout = 0.5f;
@@ -173,7 +173,7 @@ void Level1Scene::Update(const double& dt) {
 
         //Cancel buying a tower
         if (Mouse::isButtonPressed(Mouse::Right) && _towerBeingPlaced) {
-            _towerSets[_index].entityobj.get()->setForDelete(); //delete the tower entity itself
+            _towerSets[_index].entityobj->setForDelete(); //delete the tower entity itself
             delete(_towerSets[_index].towerobj);    //delete the tower object itself
             _towerSets.erase(_towerSets.begin() + _index);  //delete the vector entry and resize it
             _towerBeingPlaced = false;
@@ -194,7 +194,7 @@ void Level1Scene::Update(const double& dt) {
                     Vector2f location = LevelSystem::getTilePosition(Vector2ul(Vector2f(cursorPos.x, cursorPos.y) / LevelSystem::getTileSize()));
                     location.x -= LevelSystem::getTileSize();
                     location.y -= LevelSystem::getTileSize();
-                    _towerSets[_index].entityobj.get()->setPosition(location);                                  
+                    _towerSets[_index].entityobj->setPosition(location);                                  
 
                     //allow the tower to fire once it has been placed
                     _towerSets[_index].towerobj->setCanFire(true);  
