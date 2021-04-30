@@ -17,10 +17,13 @@ public:
 	float getBaseFireRate();
 	void setCanFire(bool canFire);
 	bool getCanFire();
+	float getRange();
+	void setRange(float range);
 
 protected:
 	int _upgradeLevel;
 	bool _canFire;
 	float _baseFireRate;
 	float _firerate = _baseFireRate;
+	float _range;
 };

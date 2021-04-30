@@ -31,3 +31,13 @@ bool Tower::getCanFire()
 {
 	return this->_canFire;
 }
+
+float Tower::getRange()
+{
+	return this->_range;
+}
+
+void Tower::setRange(float range)
+{
+	this->_range = range;
+}

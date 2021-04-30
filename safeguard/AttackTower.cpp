@@ -2,6 +2,8 @@
 
 using namespace sf;
 
+
+
 std::shared_ptr<Entity> AttackTower::create_tower() {
 	auto tower = Engine::GetActiveScene()->makeEntity();
 	tower->addTag("attack_tower");
@@ -47,4 +49,9 @@ std::shared_ptr<Entity> AttackTower::create_tower_bullet(Entity* tower, sf::Vect
 
 	return e;
 
+}
+
+bool AttackTower::getShootsAirEnemies()
+{
+	return this->_shootsAirEnemies;
 }

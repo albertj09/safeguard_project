@@ -3,9 +3,9 @@
 #include "engine.h"
 #include <LevelSystem.h>
 #include <algorithm>
-#include "../tower.h"
-#include "../AttackTower.h"
-#include <map>
+#include "../gamestuff.h"
+
+
 
 
 struct towerSets {
@@ -54,6 +54,7 @@ private:
 	float _clickTimeout;
 	bool _towerBeingPlaced;
 	int _index;
+	bool _upgradeInterfaceOpen;
 		
 	
 };

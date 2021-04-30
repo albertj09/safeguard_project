@@ -3,7 +3,6 @@
 #include "../components/cmp_sprite.h"
 #include "../components/cmp_button.h"
 #include "../game.h"
-#include "../gamestuff.h"
 #include <iostream>
 #include <thread>
 
@@ -44,6 +43,7 @@ void Level1Scene::Load() {
   _clickTimeout = 0.5f; //sensible timeout for the buttons
   _towerBeingPlaced = false;
   _index = 0;
+  _upgradeInterfaceOpen = false;
   
 
   setLoaded(true);
@@ -102,8 +102,13 @@ void Level1Scene::Update(const double& dt) {
         if (_purchase_attacktower_btn->get_components<ButtonComponent>()[0]->isSelected() && money > 5 && _towerBeingPlaced == false) {
 
             AttackTower* new_attack_tower = new AttackTower();  //initialize the memory of the object. These objects must be deleted between each scene switch to avoid the memory leaks.
-            new_attack_tower->setBaseFireRate(4.0f);    //Set default fire rate
+
+
+            //----------------------------------------------DEFAULT STARTING VALUES FOR ATTACK TOWERS----------------------------------------------
+            new_attack_tower->setBaseFireRate(4.0f);    
             new_attack_tower->setCanFire(false);
+            new_attack_tower->setRange(200.0f);
+            //-------------------------------------------------------------------------------------------------------------------------------------
 
             //entities
             auto newtower = new_attack_tower->create_tower();
@@ -127,12 +132,44 @@ void Level1Scene::Update(const double& dt) {
         if (Mouse::isButtonPressed(Mouse::Left) && LevelSystem::getTileAt(cursorPos) == LevelSystem::TOWERSPOTS && !_towerBeingPlaced) {
             for (auto s : _attackTowerMappingSets) {
                 if (LevelSystem::getTilePosition(Vector2ul(Vector2f(cursorPos.x, cursorPos.y) / LevelSystem::getTileSize())) == s.position) {
-                    s.sets.towerobj->setBaseFireRate(1.0f);
-                    cout << "increased fire rate of tower!" << endl;
+
+                    //CLOSE THE PREVIOUS UPGRADE INTERFACE INSTANCE
+                    if (_upgradeInterfaceOpen) {
+                        for (auto e : Engine::GetActiveScene()->ents.find("upgradeInterface")) {
+                            e->setForDelete();
+                        }
+                        for (auto e : Engine::GetActiveScene()->ents.find("upgradeButton")) {
+                            e->setForDelete();
+                        }
+
+                        _upgradeInterfaceOpen = false;
+                        cout << "deleted previous interface" << endl;
+                    }
+                    
+                   //--------------------------------------------------------------------------------------
+
+                    create_upgradeInterface_ATTACKTOWER(s.sets.towerobj, s.sets.entityobj.get()->getPosition());
+                    _upgradeInterfaceOpen = true;
+                    cout << "Upgrade interface opened!" << endl;
                     _clickTimeout = 0.5f;
                 }
             }
         }
+
+        //Right clicking or left clicking anywhere on the map while the upgrade interface is open closes it and cleans up its' respective entities
+        if (Mouse::isButtonPressed(Mouse::Right) && !_towerBeingPlaced && _upgradeInterfaceOpen) {
+            for (auto e : Engine::GetActiveScene()->ents.find("upgradeInterface")) {
+                e->setForDelete();
+            }
+            for (auto e : Engine::GetActiveScene()->ents.find("upgradeButton")) {
+                e->setForDelete();
+            }
+
+            cout << "deleted opened interface with right click" << endl;
+            _upgradeInterfaceOpen = false;
+            _clickTimeout = 0.5f;
+        }
+
 
         //Cancel buying a tower
         if (Mouse::isButtonPressed(Mouse::Right) && _towerBeingPlaced) {
@@ -145,7 +182,7 @@ void Level1Scene::Update(const double& dt) {
 
        
         
-        //Clicking on a tower tile
+        //Placing the tower
         if (LevelSystem::isOnGrid(cursorPos) && _towerBeingPlaced) {
             if (LevelSystem::getTileAt(cursorPos) == LevelSystem::TOWERSPOTS && Mouse::isButtonPressed(Mouse::Left)) {
                 if (std::find(_towerCoords.begin(), _towerCoords.end(), LevelSystem::getTilePosition(Vector2ul(Vector2f(cursorPos.x, cursorPos.y) / LevelSystem::getTileSize()))) != _towerCoords.end()) {

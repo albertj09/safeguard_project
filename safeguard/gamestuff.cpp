@@ -39,48 +39,70 @@ shared_ptr<Entity> create_purchase_tower_button_ATTACK(string text) {
 	return p_t_button;
 }
 
-shared_ptr<Entity> create_tower_ATTACK() {
-	auto tower = Engine::GetActiveScene()->makeEntity();
-	tower->addTag("attack_tower");
-	auto spritec = tower->addComponent<SpriteComponent>();
-	auto tex = Resources::get<Texture>("towers.png");
-	spritec->setTexture(tex);
-	spritec->getSprite().setTextureRect(sf::IntRect(13, 180, 50, 50));
-	spritec->getSprite().setScale(sf::Vector2f(2.0f, 2.0f));
-	//tower->setPosition(sf::Vector2f(128, 128));
-	return tower;
-	
+//bool helper function
+std::string boolToString(bool b)
+{
+	if (b) {
+		return "yes";
+	}
+	else {
+		return "no";
+	}
+}
+
+
+void create_upgradeInterface_ATTACKTOWER(AttackTower* tower, sf::Vector2f loc){
+
+	//simply create a rectangular box area
+	auto InterfaceArea = Engine::GetActiveScene()->makeEntity();
+	InterfaceArea->addTag("upgradeInterface"); //tag it for potential reasons
+
+	//define the size and shape
+	auto shape = InterfaceArea->addComponent<ShapeComponent>();
+	shape->setShape<RectangleShape>(Vector2f(200.0f, 150.0f));
+	shape->getShape().setOrigin(shape->getShape().getLocalBounds().width / 2, shape->getShape().getLocalBounds().height / 2);
+	shape->getShape().setFillColor(Color::Color(255,255,255,130));
+
+	InterfaceArea->setPosition(Vector2f(loc.x + 150.0f, loc.y - 64.0f));
+
+	//Display the statistics of the tower
+	auto labelText = InterfaceArea->addComponent<TextComponent>("Attack speed: " + std::to_string((int)tower->getBaseFireRate()) + "\n" + "Range: " + std::to_string((int)tower->getRange()) + "\n" + "Anti air?: " + boolToString(tower->getShootsAirEnemies()));
+	labelText->getText()->setColor(Color::Black);
+	labelText->getText()->setCharacterSize(15.0f);
+	labelText->getText()->setStyle(sf::Text::Bold);
+	labelText->getText()->setOrigin(labelText->getText()->getLocalBounds().width / 2 - 5.0f, labelText->getText()->getLocalBounds().height / 2 + 45.0f);
+
+	//-----------------------------------------------------------------UPGRADE BUTTON-----------------------------------------------------------------
+
+	//button entity
+	auto UpgradeButton = Engine::GetActiveScene()->makeEntity();
+	UpgradeButton->addTag("upgradeButton"); //tag it for potential reasons
+
+	//define the size and shape of the button
+	auto buttonShape = UpgradeButton->addComponent<ShapeComponent>();
+	buttonShape->setShape<RectangleShape>(Vector2f(90.0f, 30.0f));
+	buttonShape->getShape().setFillColor(Color::Magenta);
+
+	//text
+	auto upgradeButtonText = UpgradeButton->addComponent<TextComponent>("UPGRADE");
+	upgradeButtonText->getText()->setOrigin(upgradeButtonText->getText()->getLocalBounds().width / 2 - 70, upgradeButtonText->getText()->getLocalBounds().height / 2 - 15);
+	upgradeButtonText->getText()->setColor(Color::Blue);
+	upgradeButtonText->getText()->setCharacterSize(15.0f);
+	upgradeButtonText->getText()->setStyle(sf::Text::Bold);
+
+	//add button component
+	UpgradeButton->addComponent<ButtonComponent>(buttonShape, upgradeButtonText);
+	UpgradeButton->setPosition(Vector2f(InterfaceArea->getPosition().x - 45.0f, InterfaceArea->getPosition().y + 32.0f));
 }
 
 
 
-std::shared_ptr<Entity> create_tower_bullet(Entity* tower, Vector2f direction) {
-	auto e = Engine::GetActiveScene()->makeEntity();
-	e->addTag("bullet");
-
-	//The bullet appears from the tower
-	Vector2f pos = tower->getPosition() + (33.0f * direction);
-	e->setPosition(pos);
-
-	auto s = e->addComponent<SpriteComponent>(); //create the bullet sprite component
-
-	auto tex1 = Resources::get<Texture>("enemies.png");
-	//tex1.loadFromFile("res/img/enemies.png");	//load texture sheet 1
-	
-	s->setTexture(tex1);
-	s->getSprite().setTextureRect(sf::IntRect(32 * 38, 32 * 22, 32, 32));
-	s->getSprite().setOrigin(s->getSprite().getLocalBounds().width / 2, s->getSprite().getLocalBounds().height / 2);
-
-	auto p = e->addComponent<PhysicsComponent>(true, Vector2f(1.0f, 1.0f));
-	p->getBody()->SetBullet(true);
 
 
-	direction.y *= -1;
-	auto b  = e->addComponent<BulletComponent>(tower, direction, 600.0f);
 
-	return e;
 
-}
+
+
 
 //std::vector<std::shared_ptr<Entity>> spawn_enemies(int no_of_enemies) {
 //
