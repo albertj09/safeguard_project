@@ -19,7 +19,7 @@ using namespace sf;
 //button to purchase the attack tower
 shared_ptr<Entity> create_purchase_tower_button_ATTACK(string text) {
 	auto p_t_button = Engine::GetActiveScene()->makeEntity();
-	p_t_button->addTag("purchase_tower_button");
+	p_t_button->addTag("purchase_tower_button_ATTACK");
 
 	auto shape = p_t_button->addComponent<ShapeComponent>();
 	
@@ -50,6 +50,23 @@ std::string boolToString(bool b)
 	}
 }
 
+std::string InterpretLevel(AttackTower* tower)
+{
+	if (tower->getUpgradeLevel() == tower->getMaxUpgradeLevel()) {
+		return to_string(tower->getUpgradeLevel()) + "(MAX)";
+	}
+	else {
+		return to_string(tower->getUpgradeLevel());
+	}
+}
+
+int attackSpeedInterpreter(AttackTower* tower)
+{
+	return 1.0f * (11.0f - tower->getBaseFireRate());
+}
+
+
+
 
 void create_upgradeInterface_ATTACKTOWER(AttackTower* tower, sf::Vector2f loc){
 
@@ -59,18 +76,18 @@ void create_upgradeInterface_ATTACKTOWER(AttackTower* tower, sf::Vector2f loc){
 
 	//define the size and shape
 	auto shape = InterfaceArea->addComponent<ShapeComponent>();
-	shape->setShape<RectangleShape>(Vector2f(200.0f, 150.0f));
+	shape->setShape<RectangleShape>(Vector2f(210.0f, 170.0f));
 	shape->getShape().setOrigin(shape->getShape().getLocalBounds().width / 2, shape->getShape().getLocalBounds().height / 2);
 	shape->getShape().setFillColor(Color::Color(255,255,255,130));
 
 	InterfaceArea->setPosition(Vector2f(loc.x + 150.0f, loc.y - 64.0f));
 
 	//Display the statistics of the tower
-	auto labelText = InterfaceArea->addComponent<TextComponent>("Attack speed: " + std::to_string((int)tower->getBaseFireRate()) + "\n" + "Range: " + std::to_string((int)tower->getRange()) + "\n" + "Anti air?: " + boolToString(tower->getShootsAirEnemies()));
+	auto labelText = InterfaceArea->addComponent<TextComponent>("TOWER LEVEL: " + InterpretLevel(tower) + "\n\n" + "Attack speed: " + to_string(attackSpeedInterpreter(tower)) + "\n" + "Range: " + to_string((int)tower->getRange()) + "\n" + "Damage: " + to_string((int)tower->getDamage()) + "\n" + "Anti air?: " + boolToString(tower->getShootsAirEnemies()));
 	labelText->getText()->setColor(Color::Black);
 	labelText->getText()->setCharacterSize(15.0f);
 	labelText->getText()->setStyle(sf::Text::Bold);
-	labelText->getText()->setOrigin(labelText->getText()->getLocalBounds().width / 2 - 5.0f, labelText->getText()->getLocalBounds().height / 2 + 45.0f);
+	labelText->getText()->setOrigin(labelText->getText()->getLocalBounds().width / 2 - 5.0f, labelText->getText()->getLocalBounds().height / 2 + 30.0f);
 
 	//-----------------------------------------------------------------UPGRADE BUTTON-----------------------------------------------------------------
 
@@ -92,7 +109,7 @@ void create_upgradeInterface_ATTACKTOWER(AttackTower* tower, sf::Vector2f loc){
 
 	//add button component
 	UpgradeButton->addComponent<ButtonComponent>(buttonShape, upgradeButtonText);
-	UpgradeButton->setPosition(Vector2f(InterfaceArea->getPosition().x - 45.0f, InterfaceArea->getPosition().y + 32.0f));
+	UpgradeButton->setPosition(Vector2f(InterfaceArea->getPosition().x - 45.0f, InterfaceArea->getPosition().y + 42.0f));
 }
 
 

@@ -41,7 +41,7 @@ void ButtonComponent::setHighlight(bool h, bool force)
 		else
 		{
 			// Non highlithed button
-			_shapeCmp->getShape().setFillColor(Color::Transparent);
+			_shapeCmp->getShape().setFillColor(Color::Color(130, 130, 130, 130));
 		}
 	}
 }

@@ -106,8 +106,10 @@ void Level1Scene::Update(const double& dt) {
 
             //----------------------------------------------DEFAULT STARTING VALUES FOR ATTACK TOWERS----------------------------------------------
             new_attack_tower->setBaseFireRate(4.0f);    
-            new_attack_tower->setCanFire(false);
+            new_attack_tower->setCanFire(false);    //make sure that the tower doesn't shoot while it's being placed
             new_attack_tower->setRange(200.0f);
+            new_attack_tower->setUpgradeLevel(1);
+            new_attack_tower->setDamage(1.0f);
             //-------------------------------------------------------------------------------------------------------------------------------------
 
             //entities
@@ -128,33 +130,80 @@ void Level1Scene::Update(const double& dt) {
             _clickTimeout = 0.5f; //reset the timer after every button click     
         }
 
-        //Clicking on an existing tower
-        if (Mouse::isButtonPressed(Mouse::Left) && LevelSystem::getTileAt(cursorPos) == LevelSystem::TOWERSPOTS && !_towerBeingPlaced) {
-            for (auto s : _attackTowerMappingSets) {
-                if (LevelSystem::getTilePosition(Vector2ul(Vector2f(cursorPos.x, cursorPos.y) / LevelSystem::getTileSize())) == s.position) {
+        //clicking on upgrade button
+        if (!Engine::GetActiveScene()->ents.find("upgradeButton").empty()) {
+            if (Engine::GetActiveScene()->ents.find("upgradeButton")[0]->get_components<ButtonComponent>()[0]->isSelected() && money >= 15 && _upgradeInterfaceOpen && Mouse::isButtonPressed(Mouse::Left)) {
+                for (auto s : _attackTowerMappingSets) {
+                    if (s.position == _currentSelectedTower) {
+                        if (s.sets.towerobj->getUpgradeLevel() < s.sets.towerobj->getMaxUpgradeLevel()) {
+                            //increment the range
+                            s.sets.towerobj->setRange(s.sets.towerobj->getRange() + 20.0f);
+                            //making sure that the fastest firerate can be is 1.0f
+                            if (s.sets.towerobj->getBaseFireRate() >= 2.0f) {
+                                //inrement the attack speed (by reducing the interval between shots)
+                                s.sets.towerobj->setBaseFireRate(s.sets.towerobj->getBaseFireRate() - 1.0f);
+                            }
+                            //increment the upgrade level
+                            s.sets.towerobj->setUpgradeLevel(s.sets.towerobj->getUpgradeLevel() + 1);
 
-                    //CLOSE THE PREVIOUS UPGRADE INTERFACE INSTANCE
-                    if (_upgradeInterfaceOpen) {
-                        for (auto e : Engine::GetActiveScene()->ents.find("upgradeInterface")) {
-                            e->setForDelete();
-                        }
-                        for (auto e : Engine::GetActiveScene()->ents.find("upgradeButton")) {
-                            e->setForDelete();
-                        }
+                            //increment the damage
+                            s.sets.towerobj->setDamage(s.sets.towerobj->getDamage() + 1.0f);
 
-                        _upgradeInterfaceOpen = false;
-                        cout << "deleted previous interface" << endl;
+                            //--------------------------SIMULATE THE REFRESHING OF THE VALUES BY RELOADING THE INTERFACE------------------------
+                            
+                            for (auto e : Engine::GetActiveScene()->ents.find("upgradeInterface")) {
+                                 e->setForDelete();
+                            }
+                            for (auto e : Engine::GetActiveScene()->ents.find("upgradeButton")) {
+                                 e->setForDelete();
+                            }
+                               
+                            cout << "deleted previous interface" << endl;
+                            
+                            create_upgradeInterface_ATTACKTOWER(s.sets.towerobj, s.sets.entityobj->getPosition());
+                            //------------------------------------------------------------------------------------------------------------------
+
+                            cout << "tower upgraded!" << endl;
+                            money -= 15;
+                            _clickTimeout = 0.5f;
+                        }                                             
                     }
-                    
-                   //--------------------------------------------------------------------------------------
-
-                    create_upgradeInterface_ATTACKTOWER(s.sets.towerobj, s.sets.entityobj->getPosition());
-                    _upgradeInterfaceOpen = true;
-                    cout << "Upgrade interface opened!" << endl;
-                    _clickTimeout = 0.5f;
                 }
             }
         }
+        
+
+        //Clicking on an existing tower
+        if (LevelSystem::isOnGrid(cursorPos)) {
+            if (Mouse::isButtonPressed(Mouse::Left) && LevelSystem::getTileAt(cursorPos) == LevelSystem::TOWERSPOTS && !_towerBeingPlaced) {
+                for (auto s : _attackTowerMappingSets) {
+                    if (LevelSystem::getTilePosition(Vector2ul(Vector2f(cursorPos.x, cursorPos.y) / LevelSystem::getTileSize())) == s.position) {
+
+                        //CLOSE THE PREVIOUS UPGRADE INTERFACE INSTANCE
+                        if (_upgradeInterfaceOpen) {
+                            for (auto e : Engine::GetActiveScene()->ents.find("upgradeInterface")) {
+                                e->setForDelete();
+                            }
+                            for (auto e : Engine::GetActiveScene()->ents.find("upgradeButton")) {
+                                e->setForDelete();
+                            }
+
+                            _upgradeInterfaceOpen = false;
+                            cout << "deleted previous interface" << endl;
+                        }
+
+                        //--------------------------------------------------------------------------------------
+
+                        create_upgradeInterface_ATTACKTOWER(s.sets.towerobj, s.sets.entityobj->getPosition());
+                        _currentSelectedTower = s.position;
+                        _upgradeInterfaceOpen = true;
+                        cout << "Upgrade interface opened!" << endl;
+                        _clickTimeout = 0.5f;
+                    }
+                }
+            }
+        }
+        
 
         //Right clicking or left clicking anywhere on the map while the upgrade interface is open closes it and cleans up its' respective entities
         if (Mouse::isButtonPressed(Mouse::Right) && !_towerBeingPlaced && _upgradeInterfaceOpen) {
@@ -200,7 +249,7 @@ void Level1Scene::Update(const double& dt) {
                     _towerSets[_index].towerobj->setCanFire(true);  
                  
                     //update gold amount
-                    money -= 5;
+                    money -= 20;
 
                     //debug info
                     cout << "\n\nIndeed a tower spot! Tower placed!" << endl;

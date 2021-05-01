@@ -43,6 +43,7 @@ private:
 
 	//TOWER COORDINATES
 	std::vector<sf::Vector2f> _towerCoords;
+	sf::Vector2f _currentSelectedTower;
 
 	
 	//TOWER MAPPING SETS

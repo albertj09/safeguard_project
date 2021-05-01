@@ -5,6 +5,11 @@ int Tower::getUpgradeLevel()
 	return this->_upgradeLevel;
 }
 
+void Tower::setUpgradeLevel(int lvl)
+{
+	this->_upgradeLevel = lvl;
+}
+
 void Tower::updateTime(double dt) {
 	if (this->_firerate >= 0.0f) this->_firerate -= (float)dt;
 }
@@ -40,4 +45,14 @@ float Tower::getRange()
 void Tower::setRange(float range)
 {
 	this->_range = range;
+}
+
+float Tower::getDamage()
+{
+	return this->_damage;
+}
+
+void Tower::setDamage(float dmg)
+{
+	this->_damage = dmg;
 }

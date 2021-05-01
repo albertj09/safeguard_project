@@ -55,3 +55,8 @@ bool AttackTower::getShootsAirEnemies()
 {
 	return this->_shootsAirEnemies;
 }
+
+int AttackTower::getMaxUpgradeLevel()
+{
+	return this->_maxUpgradeLevel;
+}
