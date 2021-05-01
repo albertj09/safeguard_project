@@ -173,6 +173,9 @@ void Level1Scene::Update(const double& dt) {
                             //increment the damage
                             s.sets.towerobj->setDamage(s.sets.towerobj->getDamage() + 1.0f);
 
+                            //visual upgrade
+                            s.sets.towerobj->visualUpgrade(s.sets.entityobj);
+
                             //--------------------------SIMULATE THE REFRESHING OF THE VALUES BY RELOADING THE INTERFACE------------------------
                             
                             for (auto e : Engine::GetActiveScene()->ents.find("upgradeInterface")) {

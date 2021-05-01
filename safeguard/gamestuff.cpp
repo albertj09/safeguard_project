@@ -97,7 +97,7 @@ void create_upgradeInterface_ATTACKTOWER(AttackTower* tower, sf::Vector2f loc){
 	shape->getShape().setOrigin(shape->getShape().getLocalBounds().width / 2, shape->getShape().getLocalBounds().height / 2);
 	shape->getShape().setFillColor(Color::Color(255,255,255,130));
 
-	InterfaceArea->setPosition(Vector2f(loc.x + 150.0f, loc.y - 64.0f));
+	InterfaceArea->setPosition(Vector2f(loc.x + 180.0f, loc.y - 64.0f));
 
 	//Display the statistics of the tower
 	auto labelText = InterfaceArea->addComponent<TextComponent>("TOWER LEVEL: " + InterpretLevel(tower) + "\n\n" + "Attack speed: " + to_string(attackSpeedInterpreter(tower)) + "\n" + "Range: " + to_string((int)tower->getRange()) + "\n" + "Damage: " + to_string((int)tower->getDamage()) + "\n" + "Anti air?: " + boolToString(tower->getShootsAirEnemies()));

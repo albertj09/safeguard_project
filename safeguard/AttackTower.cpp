@@ -60,3 +60,16 @@ int AttackTower::getMaxUpgradeLevel()
 {
 	return this->_maxUpgradeLevel;
 }
+
+void AttackTower::visualUpgrade(std::shared_ptr<Entity> entity)
+{
+	if (this->_upgradeLevel == 2) {
+		entity->get_components<SpriteComponent>()[0]->getSprite().setTextureRect(sf::IntRect(59, 182, 50, 50));
+	}
+	else if (this->_upgradeLevel == 3) {
+		entity->get_components<SpriteComponent>()[0]->getSprite().setTextureRect(sf::IntRect(147, 182, 50, 50));
+	}
+	else if (this->_upgradeLevel == 4) {
+		entity->get_components<SpriteComponent>()[0]->getSprite().setTextureRect(sf::IntRect(277, 182, 50, 50));
+	}	
+}
