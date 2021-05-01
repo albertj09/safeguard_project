@@ -36,7 +36,7 @@ void Level1Scene::Load() {
 
 
   //PURCHASE BUTTONS
-  _purchase_attacktower_btn = create_purchase_tower_button_ATTACK("Attack\nTower\n  $5");
+  //_purchase_attacktower_btn = create_purchase_tower_button_ATTACK("Attack\nTower\n  $5");
 
 
   //ADDITIONAL VARIABLES
@@ -44,6 +44,7 @@ void Level1Scene::Load() {
   _towerBeingPlaced = false;
   _index = 0;
   _upgradeInterfaceOpen = false;
+  _buyInterfaceOpen = false;
   
 
   setLoaded(true);
@@ -98,37 +99,60 @@ void Level1Scene::Update(const double& dt) {
 
     if (_clickTimeout < 0.0f) {
 
-        //CLicking on the purchase attack tower button
-        if (_purchase_attacktower_btn->get_components<ButtonComponent>()[0]->isSelected() && money > 5 && _towerBeingPlaced == false) {
+        //Toggle open/close the buying interface for the towers
+        if (Keyboard::isKeyPressed(Keyboard::B)) {
+            if (!_buyInterfaceOpen) {
+                createBuyInterface();
+                _buyInterfaceOpen = true;
+                cout << "buying interface opened!" << endl;
+                _clickTimeout = 0.5f;
+            }
+            else if (_buyInterfaceOpen) {
+                for (auto e : Engine::GetActiveScene()->ents.find("buyInterface")) {
+                    e->setForDelete();
+                }
+                for (auto e : Engine::GetActiveScene()->ents.find("purchase_tower_button_ATTACK")) {
+                    e->setForDelete();
+                }
 
-            AttackTower* new_attack_tower = new AttackTower();  //initialize the memory of the object. These objects must be deleted between each scene switch to avoid the memory leaks.
-
-
-            //----------------------------------------------DEFAULT STARTING VALUES FOR ATTACK TOWERS----------------------------------------------
-            new_attack_tower->setBaseFireRate(4.0f);    
-            new_attack_tower->setCanFire(false);    //make sure that the tower doesn't shoot while it's being placed
-            new_attack_tower->setRange(200.0f);
-            new_attack_tower->setUpgradeLevel(1);
-            new_attack_tower->setDamage(1.0f);
-            //-------------------------------------------------------------------------------------------------------------------------------------
-
-            //entities
-            auto newtower = new_attack_tower->create_tower();
-            
-
-            //create and add a new tower set (tower obj + its' entity)
-            towerSets newset;
-            newset.towerobj = new_attack_tower;
-            newset.entityobj = newtower;         
-            _towerSets.push_back(newset);
-            cout << "towerSets size: " << + _towerSets.size() << endl;
-            
-            
-            
-            //misc
-            _towerBeingPlaced = true;
-            _clickTimeout = 0.5f; //reset the timer after every button click     
+                _buyInterfaceOpen = false;
+                cout << "buying interface closed!" << endl;
+                _clickTimeout = 0.5f;
+            }          
         }
+
+        //When the buying interface is opened, the ability to purchase towers
+        if (!Engine::GetActiveScene()->ents.find("purchase_tower_button_ATTACK").empty()) {
+            if (Engine::GetActiveScene()->ents.find("purchase_tower_button_ATTACK")[0]->get_components<ButtonComponent>()[0]->isSelected() && Mouse::isButtonPressed(Mouse::Left) && _towerBeingPlaced == false) {
+                AttackTower* new_attack_tower = new AttackTower();  //initialize the memory of the object. These objects must be deleted between each scene switch to avoid the memory leaks.
+
+
+                //----------------------------------------------DEFAULT STARTING VALUES FOR ATTACK TOWERS----------------------------------------------
+                new_attack_tower->setBaseFireRate(4.0f);
+                new_attack_tower->setCanFire(false);    //make sure that the tower doesn't shoot while it's being placed
+                new_attack_tower->setRange(200.0f);
+                new_attack_tower->setUpgradeLevel(1);
+                new_attack_tower->setDamage(1.0f);
+                //-------------------------------------------------------------------------------------------------------------------------------------
+
+                //entities
+                auto newtower = new_attack_tower->create_tower();
+
+
+                //create and add a new tower set (tower obj + its' entity)
+                towerSets newset;
+                newset.towerobj = new_attack_tower;
+                newset.entityobj = newtower;
+                _towerSets.push_back(newset);
+                cout << "towerSets size: " << +_towerSets.size() << endl;
+
+                //misc
+                _towerBeingPlaced = true;
+                _clickTimeout = 0.5f; //reset the timer after every button click     
+            }
+        }
+        
+
 
         //clicking on upgrade button
         if (!Engine::GetActiveScene()->ents.find("upgradeButton").empty()) {

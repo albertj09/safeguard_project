@@ -16,28 +16,7 @@ using namespace sf;
 
 
 
-//button to purchase the attack tower
-shared_ptr<Entity> create_purchase_tower_button_ATTACK(string text) {
-	auto p_t_button = Engine::GetActiveScene()->makeEntity();
-	p_t_button->addTag("purchase_tower_button_ATTACK");
 
-	auto shape = p_t_button->addComponent<ShapeComponent>();
-	
-	shape->setShape<RectangleShape>(Vector2f(64.0f, 64.0f));
-	shape->getShape().setOrigin(shape->getShape().getLocalBounds().width / 2, shape->getShape().getLocalBounds().height / 2);
-	
-
-	auto text1 = p_t_button->addComponent<TextComponent>(text);
-	text1->getText()->setOrigin(64.0f / 2 - 5, text1->getText()->getLocalBounds().height / 2 - 15);
-	text1->getText()->setColor(Color::Red);
-	text1->getText()->setCharacterSize(15.0f);
-	text1->getText()->setStyle(sf::Text::Bold);
-
-
-	p_t_button->addComponent<ButtonComponent>(shape, text1);
-	p_t_button->setPosition(sf::Vector2f(64.0f, 665.0f));
-	return p_t_button;
-}
 
 //bool helper function
 std::string boolToString(bool b)
@@ -63,6 +42,44 @@ std::string InterpretLevel(AttackTower* tower)
 int attackSpeedInterpreter(AttackTower* tower)
 {
 	return 1.0f * (11.0f - tower->getBaseFireRate());
+}
+
+void createBuyInterface()
+{
+	//------------------------------INTERFACE AREA-------------------------------
+
+	auto InterfaceArea = Engine::GetActiveScene()->makeEntity();
+	InterfaceArea->addTag("buyInterface");
+
+	auto shape = InterfaceArea->addComponent<ShapeComponent>();
+	shape->setShape<RectangleShape>(Vector2f(600.0f, 100.0f));
+	shape->getShape().setOrigin(shape->getShape().getLocalBounds().width / 2, shape->getShape().getLocalBounds().height / 2);
+	shape->getShape().setFillColor(Color::Color(255, 255, 255, 130));
+
+	InterfaceArea->setPosition(Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2 + 250.0f));
+	//-----------------------------------------------------------------------------
+
+	//-------------------------------PURCHASE ATTACK TOWER BUTTON-------------------------------
+	auto p_at_button = Engine::GetActiveScene()->makeEntity();
+	p_at_button->addTag("purchase_tower_button_ATTACK");
+
+	auto buttonShape = p_at_button->addComponent<ShapeComponent>();
+
+	buttonShape->setShape<RectangleShape>(Vector2f(68.0f, 64.0f));
+	buttonShape->getShape().setOrigin(shape->getShape().getLocalBounds().width / 2, shape->getShape().getLocalBounds().height / 2);
+
+	auto text1 = p_at_button->addComponent<TextComponent>("Attack\nTower\n $20");
+	text1->getText()->setOrigin(text1->getText()->getLocalBounds().width / 2 + 240.0f, text1->getText()->getLocalBounds().height / 2);
+	text1->getText()->setColor(Color::Red);
+	text1->getText()->setCharacterSize(15.0f);
+	text1->getText()->setStyle(sf::Text::Bold);
+
+	p_at_button->addComponent<ButtonComponent>(buttonShape, text1);
+	//------------------------------------------------------------------------------------------
+
+	//adjust position of the button entity
+	p_at_button->setPosition(Vector2f(InterfaceArea->getPosition().x + 40.0f, InterfaceArea->getPosition().y + 17.5f));
+	
 }
 
 

@@ -56,6 +56,7 @@ private:
 	bool _towerBeingPlaced;
 	int _index;
 	bool _upgradeInterfaceOpen;
+	bool _buyInterfaceOpen;
 		
 	
 };
