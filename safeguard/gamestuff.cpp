@@ -127,6 +127,8 @@ void create_upgradeInterface_ATTACKTOWER(AttackTower* tower, sf::Vector2f loc){
 	//add button component
 	UpgradeButton->addComponent<ButtonComponent>(buttonShape, upgradeButtonText);
 	UpgradeButton->setPosition(Vector2f(InterfaceArea->getPosition().x - 45.0f, InterfaceArea->getPosition().y + 42.0f));
+
+	
 }
 
 
