@@ -8,9 +8,12 @@ protected:
   sf::Vector2f _direction;
   float _speed;
   Entity* _tower;
+  float _dmg;
 
 public:
   void update(double dt) override;
+  void setBulletDamage(float damage);
+  float getBulletDamage();
   void render() override {}
   explicit BulletComponent(Entity* p, Entity* tower, sf::Vector2f direction, float speed);
   BulletComponent() = delete;

@@ -32,4 +32,16 @@ void BulletComponent::update(double dt) {
 }
 
 BulletComponent::BulletComponent(Entity* p, Entity* tower, Vector2f direction, float speed)
-    : Component(p), _tower(tower), _direction(direction), _lifetime(5.0f), _speed(speed)  {}
+	: Component(p), _tower(tower), _direction(direction), _lifetime(5.0f), _speed(speed) {}
+
+void BulletComponent::setBulletDamage(float damage)
+{
+	this->_dmg = damage;
+}
+
+float BulletComponent::getBulletDamage()
+{
+	return this->_dmg;
+}
+
+

@@ -31,7 +31,6 @@ std::shared_ptr<Entity> AttackTower::create_tower_bullet(Entity* tower, sf::Vect
 	auto s = e->addComponent<SpriteComponent>(); //create the bullet sprite component
 
 	auto tex1 = Resources::get<Texture>("enemies.png");
-	//tex1.loadFromFile("res/img/enemies.png");	//load texture sheet 1
 
 	s->setTexture(tex1);
 	s->getSprite().setTextureRect(sf::IntRect(32 * 38, 32 * 22, 32, 32));

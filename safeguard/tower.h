@@ -22,6 +22,8 @@ public:
 	void setRange(float range);
 	float getDamage();
 	void setDamage(float dmg);
+	void setTowerType(std::string type);
+	std::string getTowerType();
 
 
 
@@ -32,4 +34,5 @@ protected:
 	float _firerate = _baseFireRate;
 	float _range;
 	float _damage;
+	std::string _towerType;
 };

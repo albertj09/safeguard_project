@@ -56,3 +56,13 @@ void Tower::setDamage(float dmg)
 {
 	this->_damage = dmg;
 }
+
+void Tower::setTowerType(std::string type)
+{
+	this->_towerType = type;
+}
+
+std::string Tower::getTowerType()
+{
+	return this->_towerType;
+}
