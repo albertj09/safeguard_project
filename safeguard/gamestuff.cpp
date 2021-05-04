@@ -165,6 +165,23 @@ void create_upgradeInterface_ATTACKTOWER(AttackTower* tower, sf::Vector2f loc){
 	UpgradeButton->addComponent<ButtonComponent>(buttonShape, upgradeButtonText);
 	UpgradeButton->setPosition(Vector2f(InterfaceArea->getPosition().x - 45.0f, InterfaceArea->getPosition().y + 42.0f));
 
+	//---------------------------------------------------------------------------------------------------------------------------------------------------
+
+	//-----------------------------------------------------RANGE VIEWER---------------------------------------------------------------
+
+	auto rangeCircleEntity = Engine::GetActiveScene()->makeEntity();
+	rangeCircleEntity->addTag("rangeCircle");
+
+	auto rangeShape = rangeCircleEntity->addComponent<ShapeComponent>();
+	rangeShape->setShape<CircleShape>(tower->getRange());
+	rangeShape->getShape().setFillColor(Color::Color(100, 100, 100, 100));
+	rangeShape->getShape().setOutlineThickness(3.0f);
+	rangeShape->getShape().setOutlineColor(Color::Yellow);
+	rangeShape->getShape().setOrigin(rangeShape->getShape().getLocalBounds().width / 2 - LevelSystem::getTileSize() - 15.0f, rangeShape->getShape().getLocalBounds().height / 2 - LevelSystem::getTileSize() - 15.0f);
+
+	rangeCircleEntity->setPosition(loc);
+
+
 	
 }
 
@@ -210,6 +227,20 @@ void create_upgradeInterface_AIRTOWER(AirTower* tower, sf::Vector2f loc)
 	//add button component
 	UpgradeButton->addComponent<ButtonComponent>(buttonShape, upgradeButtonText);
 	UpgradeButton->setPosition(Vector2f(InterfaceArea->getPosition().x - 45.0f, InterfaceArea->getPosition().y + 42.0f));
+
+	//-----------------------------------------------------RANGE VIEWER---------------------------------------------------------------
+
+	auto rangeCircleEntity = Engine::GetActiveScene()->makeEntity();
+	rangeCircleEntity->addTag("rangeCircle");
+
+	auto rangeShape = rangeCircleEntity->addComponent<ShapeComponent>();
+	rangeShape->setShape<CircleShape>(tower->getRange());
+	rangeShape->getShape().setFillColor(Color::Color(100, 100, 100, 100));
+	rangeShape->getShape().setOutlineThickness(3.0f);
+	rangeShape->getShape().setOutlineColor(Color::Yellow);
+	rangeShape->getShape().setOrigin(rangeShape->getShape().getLocalBounds().width / 2 - LevelSystem::getTileSize() - 15.0f, rangeShape->getShape().getLocalBounds().height / 2 - LevelSystem::getTileSize() - 15.0f);
+
+	rangeCircleEntity->setPosition(loc);
 }
 
 

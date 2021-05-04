@@ -372,6 +372,9 @@ void Level1Scene::Update(const double& dt) {
                                 for (auto e : Engine::GetActiveScene()->ents.find("upgradeButton")) {
                                     e->setForDelete();
                                 }
+                                for (auto e : Engine::GetActiveScene()->ents.find("rangeCircle")) {
+                                    e->setForDelete();
+                                }
 
                                 cout << "deleted previous interface" << endl;
 
@@ -414,6 +417,9 @@ void Level1Scene::Update(const double& dt) {
                                 for (auto e : Engine::GetActiveScene()->ents.find("upgradeButton")) {
                                     e->setForDelete();
                                 }
+                                for (auto e : Engine::GetActiveScene()->ents.find("rangeCircle")) {
+                                    e->setForDelete();
+                                }
 
                                 cout << "deleted previous interface" << endl;
 
@@ -453,6 +459,9 @@ void Level1Scene::Update(const double& dt) {
                                         for (auto e : Engine::GetActiveScene()->ents.find("upgradeButton")) {
                                             e->setForDelete();
                                         }
+                                        for (auto e : Engine::GetActiveScene()->ents.find("rangeCircle")) {
+                                            e->setForDelete();
+                                        }
 
                                         _upgradeInterfaceOpen = false;
                                         cout << "deleted previous interface" << endl;
@@ -481,6 +490,9 @@ void Level1Scene::Update(const double& dt) {
                                             e->setForDelete();
                                         }
                                         for (auto e : Engine::GetActiveScene()->ents.find("upgradeButton")) {
+                                            e->setForDelete();
+                                        }
+                                        for (auto e : Engine::GetActiveScene()->ents.find("rangeCircle")) {
                                             e->setForDelete();
                                         }
 
@@ -513,6 +525,9 @@ void Level1Scene::Update(const double& dt) {
                 e->setForDelete();
             }
             for (auto e : Engine::GetActiveScene()->ents.find("upgradeButton")) {
+                e->setForDelete();
+            }
+            for (auto e : Engine::GetActiveScene()->ents.find("rangeCircle")) {
                 e->setForDelete();
             }
 
