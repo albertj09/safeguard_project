@@ -118,9 +118,7 @@ float calculateDistance(sf::Vector2f vec1, sf::Vector2f vec2)
 	return abs(sqrtf(pow(vec2.x - vec1.x, 2) + pow(vec2.y - vec1.y, 2) * 1.0f));
 }
 
-void createBaseEntity()
-{
-}
+
 
 
 
@@ -153,12 +151,12 @@ void create_upgradeInterface_ATTACKTOWER(AttackTower* tower, sf::Vector2f loc){
 
 	//define the size and shape of the button
 	auto buttonShape = UpgradeButton->addComponent<ShapeComponent>();
-	buttonShape->setShape<RectangleShape>(Vector2f(90.0f, 30.0f));
+	buttonShape->setShape<RectangleShape>(Vector2f(90.0f, 37.0f));
 	buttonShape->getShape().setFillColor(Color::Magenta);
 
 	//text
-	auto upgradeButtonText = UpgradeButton->addComponent<TextComponent>("UPGRADE");
-	upgradeButtonText->getText()->setOrigin(upgradeButtonText->getText()->getLocalBounds().width / 2 - 70, upgradeButtonText->getText()->getLocalBounds().height / 2 - 15);
+	auto upgradeButtonText = UpgradeButton->addComponent<TextComponent>("UPGRADE\n ($15)");
+	upgradeButtonText->getText()->setOrigin(upgradeButtonText->getText()->getLocalBounds().width / 2 - 70, upgradeButtonText->getText()->getLocalBounds().height / 2 - 30);
 	upgradeButtonText->getText()->setColor(Color::Blue);
 	upgradeButtonText->getText()->setCharacterSize(15.0f);
 	upgradeButtonText->getText()->setStyle(sf::Text::Bold);
@@ -199,12 +197,12 @@ void create_upgradeInterface_AIRTOWER(AirTower* tower, sf::Vector2f loc)
 
 	//define the size and shape of the button
 	auto buttonShape = UpgradeButton->addComponent<ShapeComponent>();
-	buttonShape->setShape<RectangleShape>(Vector2f(90.0f, 30.0f));
+	buttonShape->setShape<RectangleShape>(Vector2f(90.0f, 37.0f));
 	buttonShape->getShape().setFillColor(Color::Magenta);
 
 	//text
-	auto upgradeButtonText = UpgradeButton->addComponent<TextComponent>("UPGRADE");
-	upgradeButtonText->getText()->setOrigin(upgradeButtonText->getText()->getLocalBounds().width / 2 - 70, upgradeButtonText->getText()->getLocalBounds().height / 2 - 15);
+	auto upgradeButtonText = UpgradeButton->addComponent<TextComponent>("UPGRADE\n ($15)");
+	upgradeButtonText->getText()->setOrigin(upgradeButtonText->getText()->getLocalBounds().width / 2 - 70, upgradeButtonText->getText()->getLocalBounds().height / 2 - 30.0f);
 	upgradeButtonText->getText()->setColor(Color::Blue);
 	upgradeButtonText->getText()->setCharacterSize(15.0f);
 	upgradeButtonText->getText()->setStyle(sf::Text::Bold);
@@ -245,6 +243,97 @@ std::shared_ptr<Entity> spawn_enemy(int level) {
 	enemy->setPosition(startingPos);
 	return enemy;
 }
+
+void executeWave(int wave)
+{
+
+}
+
+
+
+void createBaseEntity()
+{
+	auto base = Engine::GetActiveScene()->makeEntity();
+	base->addTag("base");
+	auto spritec = base->addComponent<SpriteComponent>();
+	auto tex = Resources::get<Texture>("base.png");
+	spritec->setTexture(tex);
+	spritec->getSprite().setTextureRect(sf::IntRect(15, 20, 487, 480));
+	spritec->getSprite().setScale(sf::Vector2f(0.4f, 0.4f));
+
+
+	//ADD HP TEXT
+	auto healthText = base->addComponent<TextComponent>("HP:200");
+	healthText->getText()->setOrigin(healthText->getText()->getLocalBounds().width / 2 - 110.0f, healthText->getText()->getLocalBounds().height / 2 + 10.0f);
+	healthText->getText()->setColor(Color::Red);
+	healthText->getText()->setCharacterSize(18.0f);
+	healthText->getText()->setStyle(sf::Text::Bold);
+	
+
+	base->setPosition(LevelSystem::getTilePosition(LevelSystem::findTiles(LevelSystem::END)[0]) - sf::Vector2f(LevelSystem::getTileSize() / 2 + 80.0f, LevelSystem::getTileSize() / 2 + 135.0f));
+}
+
+void createMoneyEntity()
+{
+	auto money = Engine::GetActiveScene()->makeEntity();
+	money->addTag("money");
+
+	auto moneyBackground = money->addComponent<ShapeComponent>();
+	moneyBackground->setShape<RectangleShape>(Vector2f(100.0f, 50.0f));
+	moneyBackground->getShape().setOrigin(moneyBackground->getShape().getLocalBounds().width / 2, moneyBackground->getShape().getLocalBounds().height / 2);
+	moneyBackground->getShape().setFillColor(Color::Color(100, 100, 100, 170));
+	
+
+	auto moneyText = money->addComponent<TextComponent>("$100");
+	moneyText->getText()->setOrigin(moneyText->getText()->getLocalBounds().width / 2, moneyText->getText()->getLocalBounds().height / 2 + 5.0f);
+	moneyText->getText()->setColor(Color::Green);
+	moneyText->getText()->setCharacterSize(25.0f);
+	moneyText->getText()->setStyle(sf::Text::Bold);
+
+	money->setPosition(Vector2f(Engine::GetWindow().getSize().x / 10 - 80.0f, Engine::GetWindow().getSize().y / 2 + Engine::GetWindow().getSize().y / 4 + Engine::GetWindow().getSize().y / 8));
+	
+}
+
+void createWaveEntity(int wave)
+{
+	auto waveEntity = Engine::GetActiveScene()->makeEntity();
+	waveEntity->addTag("wave");
+
+	auto waveBackground = waveEntity->addComponent<ShapeComponent>();
+	waveBackground->setShape<RectangleShape>(Vector2f(180.0f, 50.0f));
+	waveBackground->getShape().setOrigin(waveBackground->getShape().getLocalBounds().width / 2, waveBackground->getShape().getLocalBounds().height / 2);
+	waveBackground->getShape().setFillColor(Color::Color(100, 100, 100, 170));
+
+	auto waveText = waveEntity->addComponent<TextComponent>("Wave: " + to_string(wave) + "/3");
+	waveText->getText()->setOrigin(waveText->getText()->getLocalBounds().width / 2 - 10.0f, waveText->getText()->getLocalBounds().height / 2 + 5.0f);
+	waveText->getText()->setColor(Color::White);
+	waveText->getText()->setCharacterSize(25.0f);
+	waveText->getText()->setStyle(sf::Text::Bold);
+
+	waveEntity->setPosition(Vector2f(Engine::GetWindow().getSize().x / 10 - 80.0f, Engine::GetWindow().getSize().y / 2 - Engine::GetWindow().getSize().y / 4 - Engine::GetWindow().getSize().y / 8 - 30.0f));
+}
+
+void createLevelEntity(int level)
+{
+	auto levelEntity = Engine::GetActiveScene()->makeEntity();
+	levelEntity->addTag("level");
+
+	auto levelBackground = levelEntity->addComponent<ShapeComponent>();
+	levelBackground->setShape<RectangleShape>(Vector2f(180.0f, 50.0f));
+	levelBackground->getShape().setOrigin(levelBackground->getShape().getLocalBounds().width / 2, levelBackground->getShape().getLocalBounds().height / 2);
+	levelBackground->getShape().setFillColor(Color::Color(100, 100, 100, 170));
+
+	auto levelText = levelEntity->addComponent<TextComponent>("Level: " + to_string(level) + "/3");
+	levelText->getText()->setOrigin(levelText->getText()->getLocalBounds().width / 2 - 10.0f, levelText->getText()->getLocalBounds().height / 2 + 5.0f);
+	levelText->getText()->setColor(Color::White);
+	levelText->getText()->setCharacterSize(25.0f);
+	levelText->getText()->setStyle(sf::Text::Bold);
+
+	levelEntity->setPosition(Vector2f(Engine::GetWindow().getSize().x / 10 - 80.0f, Engine::GetWindow().getSize().y / 2 - Engine::GetWindow().getSize().y / 4 - Engine::GetWindow().getSize().y / 8 - 100.0f));
+
+}
+
+
 
 
 

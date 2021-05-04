@@ -6,6 +6,7 @@
 #include "AttackTower.h"
 #include "AirTower.h"
 #include "components/cmp_enemy_ai.h"
+#include "components/cmp_health.h"
 
 //std::vector<std::shared_ptr<Entity>> spawn_enemies(int no_of_enemies);
 std::shared_ptr<Entity> spawn_enemy(int level);
@@ -20,3 +21,7 @@ int attackSpeedInterpreterAIR(AirTower* tower);
 void createBuyInterface();
 float calculateDistance(sf::Vector2f vec1, sf::Vector2f vec2);
 void createBaseEntity();
+void createMoneyEntity();
+void createWaveEntity(int wave);
+void createLevelEntity(int level);
+void executeWave(int wave);

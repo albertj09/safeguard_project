@@ -83,6 +83,7 @@ private:
 
 	//OTHER VARIABLES
 	float _clickTimeout;
+	float _spawnTimeout;
 	bool _towerBeingPlaced;
 	int _indexAttack;
 	int _indexAir;
@@ -90,9 +91,22 @@ private:
 	bool _upgradeInterfaceOpen;
 	bool _buyInterfaceOpen;
 	int _level = 1;
+	int _wave;
 	std::string _selectedTowerTypeWhenPlacing;
 	std::string _selectedTowerTypeWhenClicked;
-	
+
+	//BASE HEALTH
+	int _baseHealth = 200;
+	int _money;
+
+	//MISC
+	int _wave_1_amount = 10;
+	int _wave_2_amount = 15;
+	int _wave_3_amount = 20;
+
+	int _wave_1_enemiesSpawned;
+	int _wave_2_enemiesSpawned;
+	int _wave_3_enemiesSpawned;
 		
 	
 };

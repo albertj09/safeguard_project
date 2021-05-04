@@ -11,7 +11,7 @@ using namespace std;
 using namespace sf;
 
 
-int money = 1000;
+
 
 
 
@@ -43,13 +43,20 @@ void Level1Scene::Load() {
 
 
   
-  spawn_enemy(_level);   //Specify which level
+  //spawn_enemy(_level);   //Specify which level
 
-  
+  createBaseEntity();
+
+  createMoneyEntity();
+
+  createLevelEntity(_level);
+
+  createWaveEntity(1);
 
 
   //ADDITIONAL VARIABLES
   _clickTimeout = 0.5f; //sensible timeout for the buttons
+  _spawnTimeout = 10.0f; //Initial timeout is 10 seconds before the first wave starts
   _towerBeingPlaced = false;
   _indexAttack = 0;
   _indexAir = 0;
@@ -57,6 +64,12 @@ void Level1Scene::Load() {
   _upgradeInterfaceOpen = false;
   _buyInterfaceOpen = false;
   
+  _money = 100;
+  _wave = 1;
+
+  _wave_1_enemiesSpawned = 0;
+  _wave_2_enemiesSpawned = 0;
+  _wave_3_enemiesSpawned = 0;
 
   setLoaded(true);
 
@@ -78,6 +91,8 @@ void Level1Scene::Update(const double& dt) {
 
     //Clicking timeout
     if (_clickTimeout >= 0.0f) _clickTimeout -= dt;
+
+    if (_spawnTimeout >= 0.0f) _spawnTimeout -= dt;
 
 
     //Match the tower to the mouse cursor while the player is placing it
@@ -107,6 +122,52 @@ void Level1Scene::Update(const double& dt) {
 
     
 
+    //SPAWN ENEMIES BASED ON WAVE
+    if (_spawnTimeout < 0.0f) {
+        if (_wave == 1) {
+            if (_wave_1_enemiesSpawned < _wave_1_amount) {
+                spawn_enemy(_level);                
+                _wave_1_enemiesSpawned++;
+                _spawnTimeout = 2.5f;
+            }
+            if (_wave_1_enemiesSpawned >= _wave_1_amount) {
+                _wave++;
+                Engine::GetActiveScene()->ents.find("wave")[0]->get_components<TextComponent>()[0]->SetText("Wave: " + to_string(_wave) + "/3");
+                _spawnTimeout = 10.0f;
+            }
+        }
+        else if (_wave == 2) {
+            if (_wave_2_enemiesSpawned < _wave_2_amount) {
+                spawn_enemy(_level);
+                _wave_2_enemiesSpawned++;
+                _spawnTimeout = 2.5f;
+            }
+            if (_wave_2_enemiesSpawned >= _wave_2_amount) {
+                _wave++;
+                Engine::GetActiveScene()->ents.find("wave")[0]->get_components<TextComponent>()[0]->SetText("Wave: " + to_string(_wave) + "/3");
+                _spawnTimeout = 10.0f;
+            }
+        }
+        else if (_wave == 3) {
+            if (_wave_3_enemiesSpawned < _wave_3_amount) {
+                spawn_enemy(_level);
+                _wave_3_enemiesSpawned++;
+                _spawnTimeout = 2.5f;
+            }
+            if (_wave_3_enemiesSpawned >= _wave_3_amount) {
+                //NEXT SCENE
+            }
+        }
+    }
+    
+
+
+
+
+
+
+    
+
 
     //BULLETS COLLIDING WITH THE ENEMIES
     if (!Engine::GetActiveScene()->ents.find("bullet").empty() && !Engine::GetActiveScene()->ents.find("enemy").empty()) {
@@ -122,8 +183,26 @@ void Level1Scene::Update(const double& dt) {
 
                     if (enemy->get_components<EnemyAIComponent>()[0]->getHealth() <= 0) {
                         enemy->setForDelete();
+                        //when enemy dies, +20 money
+                        _money += 20;
+                        Engine::GetActiveScene()->ents.find("money")[0]->get_components<TextComponent>()[0]->SetText("$" + to_string(_money));
                     }                                      
                     bullet->setForDelete();
+                }
+            }
+        }
+    }
+    
+    
+    //DECREASE HP OF THE BASE WHEN ENEMIES COLLIDE WITH IT
+    if (!Engine::GetActiveScene()->ents.find("enemy").empty()) {
+        for (auto enemy : Engine::GetActiveScene()->ents.find("enemy")) {
+            if (Engine::GetActiveScene()->ents.find("base")[0]->get_components<SpriteComponent>()[0]->getSprite().getGlobalBounds().contains(enemy->getPosition())) {
+                _baseHealth -= 20;
+                enemy->setForDelete();
+                Engine::GetActiveScene()->ents.find("base")[0]->get_components<TextComponent>()[0]->SetText("HP:" + to_string(_baseHealth));               
+                if (_baseHealth <= 0) {
+                    //GAME OVER
                 }
             }
         }
@@ -218,7 +297,7 @@ void Level1Scene::Update(const double& dt) {
                 newset.towerobj = new_attack_tower;
                 newset.entityobj = newtower;
                 _attackTowerSets.push_back(newset);
-                cout << "towerSets size: " << +_attackTowerSets.size() << endl;
+                
 
                 //misc
                 _towerBeingPlaced = true;
@@ -264,7 +343,7 @@ void Level1Scene::Update(const double& dt) {
 
         //clicking on upgrade button
         if (!Engine::GetActiveScene()->ents.find("upgradeButton").empty()) {
-            if (Engine::GetActiveScene()->ents.find("upgradeButton")[0]->get_components<ButtonComponent>()[0]->isSelected() && money >= 15 && _upgradeInterfaceOpen && Mouse::isButtonPressed(Mouse::Left)) {
+            if (Engine::GetActiveScene()->ents.find("upgradeButton")[0]->get_components<ButtonComponent>()[0]->isSelected() && _money >= 15 && _upgradeInterfaceOpen && Mouse::isButtonPressed(Mouse::Left)) {
                 if (_selectedTowerTypeWhenClicked == "attack") {
                     for (auto s : _attackTowerMappingSets) {
                         if (s.position == _currentSelectedTower) {
@@ -300,7 +379,8 @@ void Level1Scene::Update(const double& dt) {
                                 //------------------------------------------------------------------------------------------------------------------
 
                                 cout << "tower upgraded!" << endl;
-                                money -= 15;
+                                _money -= 15;                               
+                                Engine::GetActiveScene()->ents.find("money")[0]->get_components<TextComponent>()[0]->SetText("$" + to_string(_money));
                                 _clickTimeout = 0.5f;
                             }
                         }
@@ -341,7 +421,8 @@ void Level1Scene::Update(const double& dt) {
                                 //------------------------------------------------------------------------------------------------------------------
 
                                 cout << "tower upgraded!" << endl;
-                                money -= 15;
+                                _money -= 15;                               
+                                Engine::GetActiveScene()->ents.find("money")[0]->get_components<TextComponent>()[0]->SetText("$" + to_string(_money));
                                 _clickTimeout = 0.5f;
                             }
                         }
@@ -480,7 +561,8 @@ void Level1Scene::Update(const double& dt) {
                         //allow the tower to fire once it has been placed
                         _attackTowerSets[_indexAttack].towerobj->setCanFire(true);
                         //update gold amount
-                        money -= 20;
+                        _money -= 20;
+                        Engine::GetActiveScene()->ents.find("money")[0]->get_components<TextComponent>()[0]->SetText("$" + to_string(_money));
 
                         //Update Attack Tower Mapping Set
                         mappingAttackTowerSets newMappingAttackTowerSet;
@@ -498,7 +580,8 @@ void Level1Scene::Update(const double& dt) {
                         //allow the tower to fire once it has been placed
                         _airTowerSets[_indexAir].towerobj->setCanFire(true);
                         //update gold amount
-                        money -= 25;
+                        _money -= 25;
+                        Engine::GetActiveScene()->ents.find("money")[0]->get_components<TextComponent>()[0]->SetText("$" + to_string(_money));
 
                         //Update Attack Tower Mapping Set
                         mappingAirTowerSets newMappingAirTowerSet;
