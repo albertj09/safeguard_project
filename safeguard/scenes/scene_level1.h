@@ -6,12 +6,17 @@
 #include "../gamestuff.h"
 
 
+
+
+
+
+
+
+
 struct locationTypes {
 	sf::Vector2f location;
 	std::string type;
 };
-
-
 
 //-----------------ATTACK TOWER STRUCTURES------------------
 struct attackTowerSets {
@@ -51,6 +56,10 @@ public:
 
 private:
 
+	//WAYPOINTS
+	std::vector<sf::Vector2f> _waypoints;
+	std::shared_ptr<std::vector<Entity>> _wayPointsEntities;
+
 	//ENEMIES
 	std::vector<std::shared_ptr<Entity>> _enemies;
 	
@@ -80,6 +89,7 @@ private:
 	int _indexBomb;
 	bool _upgradeInterfaceOpen;
 	bool _buyInterfaceOpen;
+	int _level = 1;
 	std::string _selectedTowerTypeWhenPlacing;
 	std::string _selectedTowerTypeWhenClicked;
 	

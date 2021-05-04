@@ -22,10 +22,14 @@ public:
     END = 'e',
     WALL = 'w',
     TOWERSPOTS = 't',
-    WAYPOINT = '+',
+    ROAD = '+',
     ENEMY = 'n',
     WATER = 'h',
-    SHOP = 'b'
+    WAYPOINT1 = '1',
+    WAYPOINT2 = '2',
+    WAYPOINT3 = '3',
+    WAYPOINT4 = '4',
+    WAYPOINT5 = '5'
   };
 
   static Tile getTile(sf::Vector2ul);

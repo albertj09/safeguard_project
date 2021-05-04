@@ -11,9 +11,15 @@ float LevelSystem::_tileSize(32);
 std::map<LevelSystem::Tile, sf::IntRect> LevelSystem::_rectMap{
 	{ EMPTY, IntRect(0, _tileSize, _tileSize, _tileSize) },
 	{ WALL, IntRect(32, 128, _tileSize, _tileSize) },
-	{ WAYPOINT, IntRect(192, 128, _tileSize, _tileSize) },
+	{ ROAD, IntRect(192, 128, _tileSize, _tileSize) },
 	{ TOWERSPOTS, IntRect(0, 0, _tileSize, _tileSize) },
-	{ WATER, IntRect(192, 256, _tileSize, _tileSize) }
+	{ WATER, IntRect(192, 256, _tileSize, _tileSize) },
+	{ START, IntRect(192, 128, _tileSize, _tileSize) },
+	{ WAYPOINT1, IntRect(192, 128, _tileSize, _tileSize) },
+	{ WAYPOINT2, IntRect(192, 128, _tileSize, _tileSize) },
+	{ WAYPOINT3, IntRect(192, 128, _tileSize, _tileSize) },
+	{ WAYPOINT4, IntRect(192, 128, _tileSize, _tileSize) },
+	{ WAYPOINT5, IntRect(192, 128, _tileSize, _tileSize) }
 };
 
 sf::IntRect LevelSystem::getSpriteRect(LevelSystem::Tile t) {

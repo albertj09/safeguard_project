@@ -25,7 +25,7 @@ std::shared_ptr<Entity> AttackTower::create_tower_bullet(Entity* tower, sf::Vect
 	e->addTag("bullet");
 
 	//The bullet appears from the tower
-	Vector2f pos = tower->getPosition() + (33.0f * direction);
+	Vector2f pos = tower->getPosition() + sf::Vector2f(LevelSystem::getTileSize() / 2, LevelSystem::getTileSize() / 2);
 	e->setPosition(pos);
 
 	auto s = e->addComponent<SpriteComponent>(); //create the bullet sprite component
@@ -41,7 +41,8 @@ std::shared_ptr<Entity> AttackTower::create_tower_bullet(Entity* tower, sf::Vect
 
 
 	direction.y *= -1;
-	auto b = e->addComponent<BulletComponent>(tower, direction, 600.0f);
+	auto b = e->addComponent<BulletComponent>(tower, direction, 1000.0f);
+	
 
 	//reset the firerate back to the default fire rate
 	_firerate = _baseFireRate;

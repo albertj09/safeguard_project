@@ -34,9 +34,18 @@ void Level1Scene::Load() {
   //  }
   //}
 
+  
 
-  //PURCHASE BUTTONS
-  //_purchase_attacktower_btn = create_purchase_tower_button_ATTACK("Attack\nTower\n  $5");
+
+
+
+  createWayPointEntities(_level);
+
+
+  
+  spawn_enemy(_level);   //Specify which level
+
+  
 
 
   //ADDITIONAL VARIABLES
@@ -66,22 +75,21 @@ void Level1Scene::UnLoad() {
 void Level1Scene::Update(const double& dt) {
 
     Vector2f cursorPos = Engine::GetWindow().mapPixelToCoords(Mouse::getPosition(Engine::GetWindow()));
-    
+
     //Clicking timeout
     if (_clickTimeout >= 0.0f) _clickTimeout -= dt;
 
 
     //Match the tower to the mouse cursor while the player is placing it
     if (_selectedTowerTypeWhenPlacing == "attack" && _towerBeingPlaced == true && !_attackTowerSets.empty()) {
-        _attackTowerSets[_indexAttack].entityobj->setPosition(cursorPos);       
+        _attackTowerSets[_indexAttack].entityobj->setPosition(cursorPos);
     }
 
-    if (_selectedTowerTypeWhenPlacing == "air" && _towerBeingPlaced == true && !_airTowerSets.empty()) { 
-        _airTowerSets[_indexAir].entityobj->setPosition(cursorPos);       
+    if (_selectedTowerTypeWhenPlacing == "air" && _towerBeingPlaced == true && !_airTowerSets.empty()) {
+        _airTowerSets[_indexAir].entityobj->setPosition(cursorPos);
     }
-    
 
-   
+
 
     //ATTACK tower update firerates
     if (!_attackTowerSets.empty()) {
@@ -96,28 +104,58 @@ void Level1Scene::Update(const double& dt) {
             set.towerobj->updateTime(dt);
         }
     }
-    
+
     
 
+
+    //BULLETS COLLIDING WITH THE ENEMIES
+    if (!Engine::GetActiveScene()->ents.find("bullet").empty() && !Engine::GetActiveScene()->ents.find("enemy").empty()) {
+        for (auto bullet : Engine::GetActiveScene()->ents.find("bullet")) {
+            for (auto enemy : Engine::GetActiveScene()->ents.find("enemy")) {
+                if (enemy->get_components<SpriteComponent>()[0]->getSprite().getGlobalBounds().contains(bullet->getPosition())) {
+
+                    //decrease health based on the tower damage
+                    enemy->get_components<EnemyAIComponent>()[0]->setHealth(enemy->get_components<EnemyAIComponent>()[0]->getHealth() - bullet->get_components<BulletComponent>()[0]->getBulletDamage());
+
+                    //update the health text 
+                    enemy->get_components<TextComponent>()[0]->SetText("HP:" + to_string(enemy->get_components<EnemyAIComponent>()[0]->getHealth()));
+
+                    if (enemy->get_components<EnemyAIComponent>()[0]->getHealth() <= 0) {
+                        enemy->setForDelete();
+                    }                                      
+                    bullet->setForDelete();
+                }
+            }
+        }
+    }
+    
+
+
+
     //ATTACK towers shoot based on their respective attributes
-    if (!_attackTowerSets.empty()) {
-        for (auto set : _attackTowerSets) {
-            if (set.towerobj->getFireRateStatus() < 0.0f && set.towerobj->getCanFire()) {
-                auto bullet = set.towerobj->create_tower_bullet(set.entityobj.get(), normalize(sf::Vector2f(1.f, 1.f)));
-                bullet->get_components<BulletComponent>()[0]->setBulletDamage(set.towerobj->getDamage());
+    if (!_attackTowerSets.empty() && !Engine::GetActiveScene()->ents.find("enemy").empty()) {
+        for (auto enemy : Engine::GetActiveScene()->ents.find("enemy")) {
+            for (auto set : _attackTowerSets) {
+                if (set.towerobj->getFireRateStatus() < 0.0f && set.towerobj->getCanFire() && calculateDistance(enemy->getPosition(), set.entityobj->getPosition()) <= set.towerobj->getRange()) {
+                    auto bullet = set.towerobj->create_tower_bullet(set.entityobj.get(), normalize(enemy->getPosition() - set.entityobj->getPosition()));
+                    bullet->get_components<BulletComponent>()[0]->setBulletDamage(set.towerobj->getDamage());
+                }
             }
         }
     }
 
     //AIR towers shoot based on their respective attributes
-    if (!_airTowerSets.empty()) {
-        for (auto set : _airTowerSets) {
-            if (set.towerobj->getFireRateStatus() < 0.0f && set.towerobj->getCanFire()) {
-                auto bulletAir = set.towerobj->create_tower_bullet(set.entityobj.get(), normalize(sf::Vector2f(1.f, 1.f)));
-                bulletAir->get_components<BulletComponent>()[0]->setBulletDamage(set.towerobj->getDamage());
+    if (!_airTowerSets.empty() && !Engine::GetActiveScene()->ents.find("enemy").empty()) {
+        for (auto enemy : Engine::GetActiveScene()->ents.find("enemy")) {
+            for (auto set : _airTowerSets) {
+                if (set.towerobj->getFireRateStatus() < 0.0f && set.towerobj->getCanFire() && calculateDistance(enemy->getPosition(), set.entityobj->getPosition()) <= set.towerobj->getRange()) {
+                   auto bulletAir = set.towerobj->create_tower_bullet(set.entityobj.get(), normalize(enemy->getPosition() - set.entityobj->getPosition()));
+                   bulletAir->get_components<BulletComponent>()[0]->setBulletDamage(set.towerobj->getDamage());
+                }
             }
         }
     }
+
     
     
 
@@ -148,6 +186,12 @@ void Level1Scene::Update(const double& dt) {
             }          
         }
 
+        //DEBUG CLICK TO SPAWN ENEMY
+        if (Keyboard::isKeyPressed(Keyboard::S)) {
+            spawn_enemy(1);
+            _clickTimeout = 0.5f;
+        }
+
         //When the buying interface is opened it is possible to purchase towers
 
         //ATTACK TOWER PURCHASING
@@ -159,9 +203,9 @@ void Level1Scene::Update(const double& dt) {
                 //----------------------------------------------DEFAULT STARTING VALUES FOR ATTACK TOWERS----------------------------------------------
                 new_attack_tower->setBaseFireRate(4.0f);
                 new_attack_tower->setCanFire(false);    //make sure that the tower doesn't shoot while it's being placed
-                new_attack_tower->setRange(200.0f);
+                new_attack_tower->setRange(400.0f);
                 new_attack_tower->setUpgradeLevel(1);
-                new_attack_tower->setDamage(1.0f);
+                new_attack_tower->setDamage(10.0f);
                 new_attack_tower->setTowerType("attack");
                 //-------------------------------------------------------------------------------------------------------------------------------------
 
@@ -194,7 +238,7 @@ void Level1Scene::Update(const double& dt) {
                 new_air_tower->setCanFire(false);    //make sure that the tower doesn't shoot while it's being placed
                 new_air_tower->setRange(300.0f);
                 new_air_tower->setUpgradeLevel(1);
-                new_air_tower->setDamage(1.0f);
+                new_air_tower->setDamage(10.0f);
                 new_air_tower->setTowerType("air");
                 //-------------------------------------------------------------------------------------------------------------------------------------
 
@@ -236,7 +280,7 @@ void Level1Scene::Update(const double& dt) {
                                 s.sets.towerobj->setUpgradeLevel(s.sets.towerobj->getUpgradeLevel() + 1);
 
                                 //increment the damage
-                                s.sets.towerobj->setDamage(s.sets.towerobj->getDamage() + 1.0f);
+                                s.sets.towerobj->setDamage(s.sets.towerobj->getDamage() + 10.0f);
 
                                 //visual upgrade
                                 s.sets.towerobj->visualUpgrade(s.sets.entityobj);
@@ -277,7 +321,7 @@ void Level1Scene::Update(const double& dt) {
                                 s.sets.towerobj->setUpgradeLevel(s.sets.towerobj->getUpgradeLevel() + 1);
 
                                 //increment the damage
-                                s.sets.towerobj->setDamage(s.sets.towerobj->getDamage() + 1.0f);
+                                s.sets.towerobj->setDamage(s.sets.towerobj->getDamage() + 10.0f);
 
                                 //visual upgrade
                                 s.sets.towerobj->visualUpgrade(s.sets.entityobj);
