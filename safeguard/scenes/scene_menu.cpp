@@ -11,8 +11,14 @@ void MenuScene::Load() {
   cout << "Menu Load \n";
   {
     auto txt = makeEntity();
-    auto t = txt->addComponent<TextComponent>(
-        "Safeguard\nPress Space to Start");
+    txt->addTag("menustart");
+
+    auto t = txt->addComponent<TextComponent>("Safeguard");
+    t->getText()->setOrigin(t->getText()->getLocalBounds().width / 2 - 800.0f, t->getText()->getLocalBounds().height / 2 - 200.0f);
+    t->getText()->setCharacterSize(100.0f);
+    t->getText()->setStyle(sf::Text::Bold);
+
+    
   }
   setLoaded(true);
 }

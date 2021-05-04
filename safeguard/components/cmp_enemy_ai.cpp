@@ -40,6 +40,13 @@ void EnemyAIComponent::load(int level)
         _waypointsEntities.push_back(Engine::GetActiveScene()->ents.find("waypoint5")[0]);
         _waypointIndex = 0;
     }
+    if (level == 3) {
+        _waypointsEntities.push_back(Engine::GetActiveScene()->ents.find("waypoint1")[0]);
+        _waypointsEntities.push_back(Engine::GetActiveScene()->ents.find("waypoint2")[0]);
+        _waypointsEntities.push_back(Engine::GetActiveScene()->ents.find("waypoint3")[0]);
+        _waypointsEntities.push_back(Engine::GetActiveScene()->ents.find("waypoint4")[0]);
+        _waypointIndex = 0;
+    }
     _health = 100;
 }
 

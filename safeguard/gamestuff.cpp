@@ -380,13 +380,13 @@ void createWayPointEntities(int level)
 		waypoint1->addTag("waypoint1");
 		//debug
 		auto tc1 = waypoint1->addComponent<TextComponent>(to_string(wpindex));
-		tc1->getText()->setColor(Color::Blue);
+		tc1->getText()->setColor(Color::Transparent);
 		tc1->getText()->setCharacterSize(15.0f);
 		tc1->getText()->setStyle(sf::Text::Bold);
 		tc1->getText()->setOrigin(tc1->getText()->getLocalBounds().width / 2, tc1->getText()->getLocalBounds().height / 2);
 		auto shape1 = waypoint1->addComponent<ShapeComponent>();
 		shape1->setShape<CircleShape>(20.0f);
-		shape1->getShape().setFillColor(Color::Red);
+		shape1->getShape().setFillColor(Color::Transparent);
 		//set position of entity
 		waypoint1->setPosition(LevelSystem::getTilePosition(LevelSystem::findTiles(LevelSystem::WAYPOINT1)[0]) - sf::Vector2f(LevelSystem::getTileSize() / 2, LevelSystem::getTileSize() / 2));
 		wpindex++;
@@ -400,13 +400,13 @@ void createWayPointEntities(int level)
 		waypoint1->addTag("waypoint1");
 		//debug
 		auto tc1 = waypoint1->addComponent<TextComponent>(to_string(wpindex));
-		tc1->getText()->setColor(Color::Blue);
+		tc1->getText()->setColor(Color::Transparent);
 		tc1->getText()->setCharacterSize(15.0f);
 		tc1->getText()->setStyle(sf::Text::Bold);
 		tc1->getText()->setOrigin(tc1->getText()->getLocalBounds().width / 2, tc1->getText()->getLocalBounds().height / 2);
 		auto shape1 = waypoint1->addComponent<ShapeComponent>();
 		shape1->setShape<CircleShape>(20.0f);
-		shape1->getShape().setFillColor(Color::Red);
+		shape1->getShape().setFillColor(Color::Transparent);
 		//set position of entity
 		waypoint1->setPosition(LevelSystem::getTilePosition(LevelSystem::findTiles(LevelSystem::WAYPOINT1)[0]) - sf::Vector2f(LevelSystem::getTileSize() / 2, LevelSystem::getTileSize() / 2));
 		wpindex++;
@@ -416,13 +416,13 @@ void createWayPointEntities(int level)
 		waypoint2->addTag("waypoint2");
 		//debug
 		auto tc2 = waypoint2->addComponent<TextComponent>(to_string(wpindex));
-		tc2->getText()->setColor(Color::Blue);
+		tc2->getText()->setColor(Color::Transparent);
 		tc2->getText()->setCharacterSize(15.0f);
 		tc2->getText()->setStyle(sf::Text::Bold);
 		tc2->getText()->setOrigin(tc2->getText()->getLocalBounds().width / 2, tc2->getText()->getLocalBounds().height / 2);
 		auto shape2 = waypoint2->addComponent<ShapeComponent>();
 		shape2->setShape<CircleShape>(20.0f);
-		shape2->getShape().setFillColor(Color::Red);
+		shape2->getShape().setFillColor(Color::Transparent);
 		//set position of entity
 		waypoint2->setPosition(LevelSystem::getTilePosition(LevelSystem::findTiles(LevelSystem::WAYPOINT2)[0]) - sf::Vector2f(LevelSystem::getTileSize() / 2, LevelSystem::getTileSize() / 2));
 		wpindex++;
@@ -432,13 +432,13 @@ void createWayPointEntities(int level)
 		waypoint3->addTag("waypoint3");
 		//debug
 		auto tc3 = waypoint3->addComponent<TextComponent>(to_string(wpindex));
-		tc3->getText()->setColor(Color::Blue);
+		tc3->getText()->setColor(Color::Transparent);
 		tc3->getText()->setCharacterSize(15.0f);
 		tc3->getText()->setStyle(sf::Text::Bold);
 		tc3->getText()->setOrigin(tc3->getText()->getLocalBounds().width / 2, tc3->getText()->getLocalBounds().height / 2);
 		auto shape3 = waypoint3->addComponent<ShapeComponent>();
 		shape3->setShape<CircleShape>(20.0f);
-		shape3->getShape().setFillColor(Color::Red);
+		shape3->getShape().setFillColor(Color::Transparent);
 		//set position of entity
 		waypoint3->setPosition(LevelSystem::getTilePosition(LevelSystem::findTiles(LevelSystem::WAYPOINT3)[0]) - sf::Vector2f(LevelSystem::getTileSize() / 2, LevelSystem::getTileSize() / 2));
 		wpindex++;
@@ -448,13 +448,13 @@ void createWayPointEntities(int level)
 		waypoint4->addTag("waypoint4");
 		//debug
 		auto tc4 = waypoint4->addComponent<TextComponent>(to_string(wpindex));
-		tc4->getText()->setColor(Color::Blue);
+		tc4->getText()->setColor(Color::Transparent);
 		tc4->getText()->setCharacterSize(15.0f);
 		tc4->getText()->setStyle(sf::Text::Bold);
 		tc4->getText()->setOrigin(tc4->getText()->getLocalBounds().width / 2, tc4->getText()->getLocalBounds().height / 2);
 		auto shape4 = waypoint4->addComponent<ShapeComponent>();
 		shape4->setShape<CircleShape>(20.0f);
-		shape4->getShape().setFillColor(Color::Red);
+		shape4->getShape().setFillColor(Color::Transparent);
 		//set position of entity
 		waypoint4->setPosition(LevelSystem::getTilePosition(LevelSystem::findTiles(LevelSystem::WAYPOINT4)[0]) - sf::Vector2f(LevelSystem::getTileSize() / 2, LevelSystem::getTileSize() / 2));
 		wpindex++;
@@ -464,15 +464,81 @@ void createWayPointEntities(int level)
 		waypoint5->addTag("waypoint5");
 		//debug
 		auto tc5 = waypoint5->addComponent<TextComponent>(to_string(wpindex));
-		tc5->getText()->setColor(Color::Blue);
+		tc5->getText()->setColor(Color::Transparent);
 		tc5->getText()->setCharacterSize(15.0f);
 		tc5->getText()->setStyle(sf::Text::Bold);
 		tc5->getText()->setOrigin(tc5->getText()->getLocalBounds().width / 2, tc5->getText()->getLocalBounds().height / 2);
 		auto shape5 = waypoint5->addComponent<ShapeComponent>();
 		shape5->setShape<CircleShape>(20.0f);
-		shape5->getShape().setFillColor(Color::Red);
+		shape5->getShape().setFillColor(Color::Transparent);
 		//set position of entity
 		waypoint5->setPosition(LevelSystem::getTilePosition(LevelSystem::findTiles(LevelSystem::WAYPOINT5)[0]) - sf::Vector2f(LevelSystem::getTileSize() / 2, LevelSystem::getTileSize() / 2));
+		wpindex++;
+	}
+	if (level == 3) {
+		int wpindex = 0;
+		//----------------------------------------------------WAYPOINT 1------------------------------------------------------
+		auto waypoint1 = Engine::GetActiveScene()->makeEntity();
+		waypoint1->addTag("waypoint1");
+		//debug
+		auto tc1 = waypoint1->addComponent<TextComponent>(to_string(wpindex));
+		tc1->getText()->setColor(Color::Transparent);
+		tc1->getText()->setCharacterSize(15.0f);
+		tc1->getText()->setStyle(sf::Text::Bold);
+		tc1->getText()->setOrigin(tc1->getText()->getLocalBounds().width / 2, tc1->getText()->getLocalBounds().height / 2);
+		auto shape1 = waypoint1->addComponent<ShapeComponent>();
+		shape1->setShape<CircleShape>(20.0f);
+		shape1->getShape().setFillColor(Color::Transparent);
+		//set position of entity
+		waypoint1->setPosition(LevelSystem::getTilePosition(LevelSystem::findTiles(LevelSystem::WAYPOINT1)[0]) - sf::Vector2f(LevelSystem::getTileSize() / 2, LevelSystem::getTileSize() / 2));
+		wpindex++;
+
+		//----------------------------------------------------WAYPOINT 2------------------------------------------------------
+		auto waypoint2 = Engine::GetActiveScene()->makeEntity();
+		waypoint2->addTag("waypoint2");
+		//debug
+		auto tc2 = waypoint2->addComponent<TextComponent>(to_string(wpindex));
+		tc2->getText()->setColor(Color::Transparent);
+		tc2->getText()->setCharacterSize(15.0f);
+		tc2->getText()->setStyle(sf::Text::Bold);
+		tc2->getText()->setOrigin(tc2->getText()->getLocalBounds().width / 2, tc2->getText()->getLocalBounds().height / 2);
+		auto shape2 = waypoint2->addComponent<ShapeComponent>();
+		shape2->setShape<CircleShape>(20.0f);
+		shape2->getShape().setFillColor(Color::Transparent);
+		//set position of entity
+		waypoint2->setPosition(LevelSystem::getTilePosition(LevelSystem::findTiles(LevelSystem::WAYPOINT2)[0]) - sf::Vector2f(LevelSystem::getTileSize() / 2, LevelSystem::getTileSize() / 2));
+		wpindex++;
+
+		//----------------------------------------------------WAYPOINT 3------------------------------------------------------
+		auto waypoint3 = Engine::GetActiveScene()->makeEntity();
+		waypoint3->addTag("waypoint3");
+		//debug
+		auto tc3 = waypoint3->addComponent<TextComponent>(to_string(wpindex));
+		tc3->getText()->setColor(Color::Transparent);
+		tc3->getText()->setCharacterSize(15.0f);
+		tc3->getText()->setStyle(sf::Text::Bold);
+		tc3->getText()->setOrigin(tc3->getText()->getLocalBounds().width / 2, tc3->getText()->getLocalBounds().height / 2);
+		auto shape3 = waypoint3->addComponent<ShapeComponent>();
+		shape3->setShape<CircleShape>(20.0f);
+		shape3->getShape().setFillColor(Color::Transparent);
+		//set position of entity
+		waypoint3->setPosition(LevelSystem::getTilePosition(LevelSystem::findTiles(LevelSystem::WAYPOINT3)[0]) - sf::Vector2f(LevelSystem::getTileSize() / 2, LevelSystem::getTileSize() / 2));
+		wpindex++;
+
+		//----------------------------------------------------WAYPOINT 4------------------------------------------------------
+		auto waypoint4 = Engine::GetActiveScene()->makeEntity();
+		waypoint4->addTag("waypoint4");
+		//debug
+		auto tc4 = waypoint4->addComponent<TextComponent>(to_string(wpindex));
+		tc4->getText()->setColor(Color::Transparent);
+		tc4->getText()->setCharacterSize(15.0f);
+		tc4->getText()->setStyle(sf::Text::Bold);
+		tc4->getText()->setOrigin(tc4->getText()->getLocalBounds().width / 2, tc4->getText()->getLocalBounds().height / 2);
+		auto shape4 = waypoint4->addComponent<ShapeComponent>();
+		shape4->setShape<CircleShape>(20.0f);
+		shape4->getShape().setFillColor(Color::Transparent);
+		//set position of entity
+		waypoint4->setPosition(LevelSystem::getTilePosition(LevelSystem::findTiles(LevelSystem::WAYPOINT4)[0]) - sf::Vector2f(LevelSystem::getTileSize() / 2, LevelSystem::getTileSize() / 2));
 		wpindex++;
 	}
 

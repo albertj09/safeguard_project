@@ -4,6 +4,7 @@
 #include <LevelSystem.h>
 #include <algorithm>
 #include "../gamestuff.h"
+#include <SFML/Audio.hpp>
 
 
 
@@ -13,32 +14,32 @@
 
 
 
-struct locationTypes {
-	sf::Vector2f location;
-	std::string type;
-};
-
-//-----------------ATTACK TOWER STRUCTURES------------------
-struct attackTowerSets {
-	AttackTower* towerobj;
-	std::shared_ptr<Entity> entityobj;
-};
-
-struct mappingAttackTowerSets {
-	sf::Vector2f position;
-	attackTowerSets sets;
-};
-//----------------------------------------------------------
-
-//----------------AIR TOWER STRUCTURES----------------------
-struct airTowerSets {
-	AirTower* towerobj;
-	std::shared_ptr<Entity> entityobj;
-};
-struct mappingAirTowerSets {
-	sf::Vector2f position;
-	airTowerSets sets;
-};
+//struct locationTypes {
+//	sf::Vector2f location;
+//	std::string type;
+//};
+//
+////-----------------ATTACK TOWER STRUCTURES------------------
+//struct attackTowerSets {
+//	AttackTower* towerobj;
+//	std::shared_ptr<Entity> entityobj;
+//};
+//
+//struct mappingAttackTowerSets {
+//	sf::Vector2f position;
+//	attackTowerSets sets;
+//};
+////----------------------------------------------------------
+//
+////----------------AIR TOWER STRUCTURES----------------------
+//struct airTowerSets {
+//	AirTower* towerobj;
+//	std::shared_ptr<Entity> entityobj;
+//};
+//struct mappingAirTowerSets {
+//	sf::Vector2f position;
+//	airTowerSets sets;
+//};
 //-----------------------------------------------------------
 
 
@@ -55,6 +56,20 @@ public:
   void Render() override;
 
 private:
+
+	//SOUNDS
+	//purchase
+	sf::SoundBuffer _bufferSoundPurchase;
+	sf::Sound _soundPurchase;
+	//enemy death
+	sf::SoundBuffer _bufferSoundDeath;
+	sf::Sound _soundDeath;
+	//base hit
+	sf::SoundBuffer _bufferSoundHit;
+	sf::Sound _soundBaseHit;
+
+	
+
 
 	//WAYPOINTS
 	std::vector<sf::Vector2f> _waypoints;
@@ -107,6 +122,7 @@ private:
 	int _wave_1_enemiesSpawned;
 	int _wave_2_enemiesSpawned;
 	int _wave_3_enemiesSpawned;
+	bool _nextScene;
 		
 	
 };
