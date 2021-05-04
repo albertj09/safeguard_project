@@ -15,6 +15,7 @@ std::map<LevelSystem::Tile, sf::IntRect> LevelSystem::_rectMap{
 	{ TOWERSPOTS, IntRect(0, 0, _tileSize, _tileSize) },
 	{ WATER, IntRect(192, 256, _tileSize, _tileSize) },
 	{ START, IntRect(192, 128, _tileSize, _tileSize) },
+	{ END, IntRect(192, 128, _tileSize, _tileSize) },
 	{ WAYPOINT1, IntRect(192, 128, _tileSize, _tileSize) },
 	{ WAYPOINT2, IntRect(192, 128, _tileSize, _tileSize) },
 	{ WAYPOINT3, IntRect(192, 128, _tileSize, _tileSize) },

@@ -118,6 +118,10 @@ float calculateDistance(sf::Vector2f vec1, sf::Vector2f vec2)
 	return abs(sqrtf(pow(vec2.x - vec1.x, 2) + pow(vec2.y - vec1.y, 2) * 1.0f));
 }
 
+void createBaseEntity()
+{
+}
+
 
 
 void create_upgradeInterface_ATTACKTOWER(AttackTower* tower, sf::Vector2f loc){

@@ -1,4 +1,5 @@
 #include "cmp_enemy_ai.h"
+#include "../gamestuff.h"
 #include <cmath>
 
 using namespace std;
@@ -6,10 +7,11 @@ using namespace sf;
 
 void EnemyAIComponent::update(double dt) {
 
+
   _direction = normalize(_waypointsEntities[_waypointIndex]->getPosition() - _parent->getPosition());
 
 
-  if (_parent->getPosition() == _waypointsEntities[_waypointIndex]->getPosition()) {
+  if (calculateDistance(_parent->getPosition(), _waypointsEntities[_waypointIndex]->getPosition()) < 0.1f) {
       _waypointIndex++;
   }
 

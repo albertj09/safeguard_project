@@ -19,3 +19,4 @@ std::string InterpretLevelAIR(AirTower* tower);
 int attackSpeedInterpreterAIR(AirTower* tower);
 void createBuyInterface();
 float calculateDistance(sf::Vector2f vec1, sf::Vector2f vec2);
+void createBaseEntity();
