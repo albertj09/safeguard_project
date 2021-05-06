@@ -104,11 +104,21 @@ void Level1Scene::UnLoad() {
   cout << "Scene 1 Unload" << endl;
   for (auto s : _attackTowerSets) {
       delete(s.towerobj);
+      s.towerobj = nullptr;
   }
   
   for (auto s : _airTowerSets) {
-      delete(s.towerobj);   
+      delete(s.towerobj);
+      s.towerobj = nullptr;
   }
+
+  _towerCoords.clear();
+  _locationTypes.clear();
+  _airTowerSets.clear();
+  _attackTowerSets.clear();
+  _airTowerMappingSets.clear();
+  _attackTowerMappingSets.clear();
+
   
   ls::unload();
   Scene::UnLoad();
@@ -161,8 +171,9 @@ void Level1Scene::Update(const double& dt) {
             }
             if (_wave_1_enemiesSpawned >= _wave_1_amount && Engine::GetActiveScene()->ents.find("enemy").empty()) {
                 _wave++;
-                Engine::GetActiveScene()->ents.find("wave")[0]->get_components<TextComponent>()[0]->SetText("Wave: " + to_string(_wave) + "/3");            
-                _spawnTimeout = 10.0f;
+                //Engine::GetActiveScene()->ents.find("wave")[0]->get_components<TextComponent>()[0]->SetText("Wave: " + to_string(_wave) + "/3");  
+                _nextScene = true;
+                //_spawnTimeout = 10.0f;
                 
             }
         }
@@ -186,7 +197,7 @@ void Level1Scene::Update(const double& dt) {
             }
             if (_wave_3_enemiesSpawned >= _wave_3_amount && Engine::GetActiveScene()->ents.find("enemy").empty()) {
                 //NEXT SCENE
-                _nextScene = true;
+                
             }
         }
     }
@@ -576,14 +587,14 @@ void Level1Scene::Update(const double& dt) {
         if (Mouse::isButtonPressed(Mouse::Right) && _towerBeingPlaced) {
             if (_selectedTowerTypeWhenPlacing == "attack") {
                 _attackTowerSets[_indexAttack].entityobj->setForDelete(); //delete the tower entity itself
-                delete(&_attackTowerSets[_indexAttack].towerobj);    //delete the tower object itself
+                delete(_attackTowerSets[_indexAttack].towerobj);    //delete the tower object itself
                 _attackTowerSets.erase(_attackTowerSets.begin() + _indexAttack);  //delete the vector entry and resize it
                 _towerBeingPlaced = false;
                 _clickTimeout = 0.5f;
             }
             else if (_selectedTowerTypeWhenPlacing == "air") {
                 _airTowerSets[_indexAir].entityobj->setForDelete(); //delete the tower entity itself
-                delete(&_airTowerSets[_indexAir].towerobj);    //delete the tower object itself
+                delete(_airTowerSets[_indexAir].towerobj);    //delete the tower object itself
                 _airTowerSets.erase(_airTowerSets.begin() + _indexAir);  //delete the vector entry and resize it
                 _towerBeingPlaced = false;
                 _clickTimeout = 0.5f;
@@ -670,7 +681,7 @@ void Level1Scene::Update(const double& dt) {
    Scene::Update(dt);
 
    if (_nextScene) {
-       Engine::ChangeScene((Scene*)&level2);
+       Engine::ChangeScene((Scene*)&menu);
    }
     
 }

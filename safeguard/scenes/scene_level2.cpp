@@ -100,11 +100,11 @@ void Level2Scene::Load() {
 
 void Level2Scene::UnLoad() {
     cout << "Scene 2 Unload" << endl;
-    for (auto s : _attackTowerSets) {
+    for (auto &s : _attackTowerSets) {
         delete(s.towerobj);
     }
 
-    for (auto s : _airTowerSets) {
+    for (auto &s : _airTowerSets) {
         delete(s.towerobj);
     }
     ls::unload();
