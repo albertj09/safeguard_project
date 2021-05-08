@@ -125,5 +125,8 @@ private:
 
 	bool _nextScene;
 
+	float _pauseClickTimeout;
+	bool _paused;
+
 
 };

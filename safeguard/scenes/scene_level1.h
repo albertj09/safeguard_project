@@ -97,6 +97,7 @@ private:
 
 
 	//OTHER VARIABLES
+	
 	float _clickTimeout;
 	float _spawnTimeout;
 	bool _towerBeingPlaced;
@@ -123,6 +124,9 @@ private:
 	int _wave_2_enemiesSpawned;
 	int _wave_3_enemiesSpawned;
 	bool _nextScene;
+	
+	float _pauseClickTimeout;
+	bool _paused;
 		
 	
 };
