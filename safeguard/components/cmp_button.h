@@ -10,6 +10,7 @@ private:
 	bool _isHighlited = false;
 	std::shared_ptr<ShapeComponent> _shapeCmp;
 	std::shared_ptr<TextComponent> _textCmp;
+	std::string _buttonType;
 
 public:
 	ButtonComponent() = delete;
@@ -18,4 +19,7 @@ public:
 	void render() override {}
 	void setHighlight(bool, bool force = false);
 	bool isSelected();
+	void setButtonType(std::string type);
+	std::string getButtonType();
+	bool isHighlighted();
 };

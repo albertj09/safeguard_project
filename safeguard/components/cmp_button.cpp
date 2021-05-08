@@ -33,15 +33,25 @@ void ButtonComponent::setHighlight(bool h, bool force)
 	if (h != _isHighlited || force)
 	{
 		_isHighlited = h;
-		if (h)
+		if (h) // Highlithed button
 		{
-			// Highlithed button
-			_shapeCmp->getShape().setFillColor(Color::Yellow);
+			if (_buttonType == "menu") {
+				_shapeCmp->getShape().setFillColor(Color::Color(245, 234, 166, 180));
+			}
+			else {
+				_shapeCmp->getShape().setFillColor(Color::Yellow);
+			}			
 		}
 		else
 		{
 			// Non highlithed button
-			_shapeCmp->getShape().setFillColor(Color::Color(130, 130, 130, 130));
+			if (_buttonType == "menu") {
+				_shapeCmp->getShape().setFillColor(Color::Color(219, 201, 158, 100));
+			}
+			else {
+				_shapeCmp->getShape().setFillColor(Color::Color(130, 130, 130, 130));
+			}
+			
 		}
 	}
 }
@@ -58,4 +68,19 @@ bool ButtonComponent::isSelected()
 
 	}
 	return false;
+}
+
+void ButtonComponent::setButtonType(std::string type)
+{
+	this->_buttonType = type;
+}
+
+std::string ButtonComponent::getButtonType()
+{
+	return this->_buttonType;
+}
+
+bool ButtonComponent::isHighlighted()
+{
+	return this->_isHighlited;
 }

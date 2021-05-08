@@ -1,4 +1,4 @@
-#include "scene_level2.h"
+#include "scene_level1.h"
 #include "../components/cmp_player_physics.h"
 #include "../components/cmp_sprite.h"
 #include "../components/cmp_button.h"
@@ -16,8 +16,8 @@ using namespace sf;
 
 
 void Level3Scene::Load() {
-    cout << " Scene 3 Load" << endl;
-    ls::loadLevelFile("res/level_3.txt", 32.0f);
+    cout << " Scene 1 Load" << endl;
+    ls::loadLevelFile("res/level1TEST.txt", 32.0f);
 
 
 
@@ -48,6 +48,8 @@ void Level3Scene::Load() {
     //LOAD BASE HIT SOUND
     _bufferSoundHit.loadFromFile("res/hit.wav");
     _soundBaseHit.setBuffer(_bufferSoundHit);
+
+
 
     //_soundBaseHit.play();
 
@@ -99,14 +101,25 @@ void Level3Scene::Load() {
 
 
 void Level3Scene::UnLoad() {
-    cout << "Scene 3 Unload" << endl;
+    cout << "Scene 1 Unload" << endl;
     for (auto s : _attackTowerSets) {
         delete(s.towerobj);
+        s.towerobj = nullptr;
     }
 
     for (auto s : _airTowerSets) {
         delete(s.towerobj);
+        s.towerobj = nullptr;
     }
+
+    _towerCoords.clear();
+    _locationTypes.clear();
+    _airTowerSets.clear();
+    _attackTowerSets.clear();
+    _airTowerMappingSets.clear();
+    _attackTowerMappingSets.clear();
+
+
     ls::unload();
     Scene::UnLoad();
 }
@@ -158,9 +171,10 @@ void Level3Scene::Update(const double& dt) {
             }
             if (_wave_1_enemiesSpawned >= _wave_1_amount && Engine::GetActiveScene()->ents.find("enemy").empty()) {
                 _wave++;
-                Engine::GetActiveScene()->ents.find("wave")[0]->get_components<TextComponent>()[0]->SetText("Wave: " + to_string(_wave) + "/3");
-                _spawnTimeout = 10.0f;
-                
+                //Engine::GetActiveScene()->ents.find("wave")[0]->get_components<TextComponent>()[0]->SetText("Wave: " + to_string(_wave) + "/3");  
+                _nextScene = true;
+                //_spawnTimeout = 10.0f;
+
             }
         }
         else if (_wave == 2) {
@@ -183,7 +197,7 @@ void Level3Scene::Update(const double& dt) {
             }
             if (_wave_3_enemiesSpawned >= _wave_3_amount && Engine::GetActiveScene()->ents.find("enemy").empty()) {
                 //NEXT SCENE
-                _nextScene = true;
+
             }
         }
     }
@@ -305,6 +319,8 @@ void Level3Scene::Update(const double& dt) {
                 AttackTower* new_attack_tower = new AttackTower();  //initialize the memory of the object. These objects must be deleted between each scene switch to avoid memory leaks.
 
 
+
+
                 //----------------------------------------------DEFAULT STARTING VALUES FOR ATTACK TOWERS----------------------------------------------
                 new_attack_tower->setBaseFireRate(4.0f);
                 new_attack_tower->setCanFire(false);    //make sure that the tower doesn't shoot while it's being placed
@@ -336,6 +352,8 @@ void Level3Scene::Update(const double& dt) {
         if (!Engine::GetActiveScene()->ents.find("purchase_tower_button_AIR").empty()) {
             if (Engine::GetActiveScene()->ents.find("purchase_tower_button_AIR")[0]->get_components<ButtonComponent>()[0]->isSelected() && Mouse::isButtonPressed(Mouse::Left) && _towerBeingPlaced == false) {
                 AirTower* new_air_tower = new AirTower();  //initialize the memory of the object. These objects must be deleted between each scene switch to avoid memory leaks.
+
+
 
 
                 //----------------------------------------------DEFAULT STARTING VALUES FOR AIR TOWERS----------------------------------------------
@@ -569,14 +587,14 @@ void Level3Scene::Update(const double& dt) {
         if (Mouse::isButtonPressed(Mouse::Right) && _towerBeingPlaced) {
             if (_selectedTowerTypeWhenPlacing == "attack") {
                 _attackTowerSets[_indexAttack].entityobj->setForDelete(); //delete the tower entity itself
-                delete(&_attackTowerSets[_indexAttack].towerobj);    //delete the tower object itself
+                delete(_attackTowerSets[_indexAttack].towerobj);    //delete the tower object itself
                 _attackTowerSets.erase(_attackTowerSets.begin() + _indexAttack);  //delete the vector entry and resize it
                 _towerBeingPlaced = false;
                 _clickTimeout = 0.5f;
             }
             else if (_selectedTowerTypeWhenPlacing == "air") {
                 _airTowerSets[_indexAir].entityobj->setForDelete(); //delete the tower entity itself
-                delete(&_airTowerSets[_indexAir].towerobj);    //delete the tower object itself
+                delete(_airTowerSets[_indexAir].towerobj);    //delete the tower object itself
                 _airTowerSets.erase(_airTowerSets.begin() + _indexAir);  //delete the vector entry and resize it
                 _towerBeingPlaced = false;
                 _clickTimeout = 0.5f;
@@ -658,11 +676,6 @@ void Level3Scene::Update(const double& dt) {
             }
         }
     }
-
-
-
-
-
 
 
     Scene::Update(dt);
