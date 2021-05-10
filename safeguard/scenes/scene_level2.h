@@ -76,7 +76,7 @@ private:
 	std::shared_ptr<std::vector<Entity>> _wayPointsEntities;
 
 	//ENEMIES
-	//std::vector<std::shared_ptr<Entity>> _enemies;
+	std::vector<std::shared_ptr<Entity>> _enemies;
 
 
 	//TOWER COORDINATES
@@ -97,6 +97,7 @@ private:
 
 
 	//OTHER VARIABLES
+
 	float _clickTimeout;
 	float _spawnTimeout;
 	bool _towerBeingPlaced;
@@ -122,11 +123,12 @@ private:
 	int _wave_1_enemiesSpawned;
 	int _wave_2_enemiesSpawned;
 	int _wave_3_enemiesSpawned;
-
 	bool _nextScene;
 
 	float _pauseClickTimeout;
 	bool _paused;
+	bool _goToMainMenu;
+	bool _gameOver;
 
 
 };

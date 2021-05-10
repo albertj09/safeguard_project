@@ -128,6 +128,7 @@ private:
 	float _pauseClickTimeout;
 	bool _paused;
 	bool _goToMainMenu;
+	bool _gameOver;
 		
 	
 };

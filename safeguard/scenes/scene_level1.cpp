@@ -94,6 +94,7 @@ void Level1Scene::Load() {
   _paused = false;
   _pauseClickTimeout = 0.5f;
   _goToMainMenu = false;
+  _gameOver = false;
 
 
   setLoaded(true);
@@ -122,6 +123,7 @@ void Level1Scene::UnLoad() {
   _attackTowerSets.clear();
   _airTowerMappingSets.clear();
   _attackTowerMappingSets.clear();
+  _baseHealth = 200;
 
   
   ls::unload();
@@ -255,7 +257,9 @@ void Level1Scene::Update(const double& dt) {
         }
 
 
-
+        if (_baseHealth <= 0) {
+            _gameOver = true;
+        }
 
 
 
@@ -820,6 +824,9 @@ void Level1Scene::Update(const double& dt) {
 
         if (_nextScene) {
             Engine::ChangeScene((Scene*)&level2);
+        }
+        else if (_gameOver) {
+            Engine::ChangeScene((Scene*)&game_over_scene);
         }
     }
   
