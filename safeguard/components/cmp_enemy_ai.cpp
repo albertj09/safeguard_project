@@ -10,6 +10,7 @@ void EnemyAIComponent::update(double dt) {
 
   _direction = normalize(_waypointsEntities[_waypointIndex]->getPosition() - _parent->getPosition());
 
+
   //navigate from waypoint to waypoint
   if (calculateDistance(_parent->getPosition(), _waypointsEntities[_waypointIndex]->getPosition()) < 0.1f) {
       _waypointIndex++;
