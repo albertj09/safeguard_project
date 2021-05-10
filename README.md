@@ -1,2 +1,1 @@
-# set09121-labs-6
-[uni] Games Engineering practical 6
+A simple tower defense game based on SFML & C++ created for Games Engineering module
