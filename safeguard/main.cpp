@@ -13,5 +13,5 @@ GameOverScene game_over_scene;
 VictoryScene victory_scene;
 
 int main() {
-	Engine::Start(1920, 1080, "Safeguard", &level3);
+	Engine::Start(1920, 1080, "Safeguard", &menu);
 }
