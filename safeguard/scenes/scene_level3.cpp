@@ -63,6 +63,8 @@ void Level3Scene::Load() {
 
     createBaseEntity();
 
+    Engine::GetActiveScene()->ents.find("base")[0]->setPosition(Engine::GetActiveScene()->ents.find("base")[0]->getPosition() + Vector2f(20.0f, 20.0f));
+
     createMoneyEntity();
 
     createLevelEntity(_level);
@@ -219,7 +221,7 @@ void Level3Scene::Update(const double& dt) {
         if (_spawnTimeout < 0.0f) {
             if (_wave == 1) {
                 if (_wave_1_enemiesSpawned < _wave_1_amount) {
-                    spawn_enemy(_level);
+                    ((_wave_1_enemiesSpawned == _wave_1_amount - 1) ? spawn_enemy_BOSS(_level) : spawn_enemy(_level));                    
                     _wave_1_enemiesSpawned++;
                     _spawnTimeout = 2.5f;
                 }
@@ -232,7 +234,7 @@ void Level3Scene::Update(const double& dt) {
             }
             else if (_wave == 2) {
                 if (_wave_2_enemiesSpawned < _wave_2_amount) {
-                    spawn_enemy(_level);
+                    ((_wave_2_enemiesSpawned == _wave_2_amount - 1) ? spawn_enemy_FLYING_BOSS_FINAL(_level) : spawn_enemy_FLYING(_level));
                     _wave_2_enemiesSpawned++;
                     _spawnTimeout = 2.5f;
                 }
@@ -243,8 +245,8 @@ void Level3Scene::Update(const double& dt) {
                 }
             }
             else if (_wave == 3) {
-                if (_wave_3_enemiesSpawned < _wave_3_amount) {
-                    spawn_enemy(_level);
+                if (_wave_3_enemiesSpawned < _wave_3_amount) {                   
+                    ((_wave_3_enemiesSpawned == _wave_3_amount - 1) ? spawn_enemy_BOSS_FINAL(_level) : spawn_enemy(_level));
                     _wave_3_enemiesSpawned++;
                     _spawnTimeout = 2.5f;
                 }
@@ -259,9 +261,6 @@ void Level3Scene::Update(const double& dt) {
 
 
 
-        if (_baseHealth <= 0) {
-            _gameOver = true;
-        }
 
 
 
@@ -351,20 +350,22 @@ void Level3Scene::Update(const double& dt) {
                 for (auto enemy : Engine::GetActiveScene()->ents.find("enemy")) {
                     if (enemy->get_components<SpriteComponent>()[0]->getSprite().getGlobalBounds().contains(bullet->getPosition())) {
 
-                        //decrease health based on the tower damage
-                        enemy->get_components<EnemyAIComponent>()[0]->setHealth(enemy->get_components<EnemyAIComponent>()[0]->getHealth() - bullet->get_components<BulletComponent>()[0]->getBulletDamage());
+                        if ((enemy->get_components<EnemyAIComponent>()[0]->isAirType() && bullet->get_components<BulletComponent>()[0]->isBulletAir()) || (!enemy->get_components<EnemyAIComponent>()[0]->isAirType() && !bullet->get_components<BulletComponent>()[0]->isBulletAir())) {
+                            //decrease health based on the tower damage
+                            enemy->get_components<EnemyAIComponent>()[0]->setHealth(enemy->get_components<EnemyAIComponent>()[0]->getHealth() - bullet->get_components<BulletComponent>()[0]->getBulletDamage());
 
-                        //update the health text 
-                        enemy->get_components<TextComponent>()[0]->SetText("HP:" + to_string(enemy->get_components<EnemyAIComponent>()[0]->getHealth()));
+                            //update the health text 
+                            enemy->get_components<TextComponent>()[0]->SetText("HP:" + to_string(enemy->get_components<EnemyAIComponent>()[0]->getHealth()));
 
-                        if (enemy->get_components<EnemyAIComponent>()[0]->getHealth() <= 0) {
-                            enemy->setForDelete();
-                            _soundDeath.play();
-                            //when enemy dies, +20 money
-                            _money += 20;
-                            Engine::GetActiveScene()->ents.find("money")[0]->get_components<TextComponent>()[0]->SetText("$" + to_string(_money));
+                            if (enemy->get_components<EnemyAIComponent>()[0]->getHealth() <= 0) {
+                                enemy->setForDelete();
+                                _soundDeath.play();
+                                //when enemy dies, +20 money
+                                _money += 20;
+                                Engine::GetActiveScene()->ents.find("money")[0]->get_components<TextComponent>()[0]->SetText("$" + to_string(_money));
+                            }
+                            bullet->setForDelete();
                         }
-                        bullet->setForDelete();
                     }
                 }
             }
@@ -375,12 +376,13 @@ void Level3Scene::Update(const double& dt) {
         if (!Engine::GetActiveScene()->ents.find("enemy").empty()) {
             for (auto enemy : Engine::GetActiveScene()->ents.find("enemy")) {
                 if (Engine::GetActiveScene()->ents.find("base")[0]->get_components<SpriteComponent>()[0]->getSprite().getGlobalBounds().contains(enemy->getPosition())) {
-                    _baseHealth -= 20;
+                    enemy->get_components<EnemyAIComponent>()[0]->isBossType() ? _baseHealth -= 50 : _baseHealth -= 20;
                     _soundBaseHit.play();
                     enemy->setForDelete();
                     Engine::GetActiveScene()->ents.find("base")[0]->get_components<TextComponent>()[0]->SetText("HP:" + to_string(_baseHealth));
                     if (_baseHealth <= 0) {
                         //GAME OVER
+                        _gameOver = true;
                     }
                 }
             }
@@ -393,7 +395,7 @@ void Level3Scene::Update(const double& dt) {
         if (!_attackTowerSets.empty() && !Engine::GetActiveScene()->ents.find("enemy").empty()) {
             for (auto enemy : Engine::GetActiveScene()->ents.find("enemy")) {
                 for (auto set : _attackTowerSets) {
-                    if (set.towerobj->getFireRateStatus() < 0.0f && set.towerobj->getCanFire() && calculateDistance(enemy->getPosition(), set.entityobj->getPosition()) <= set.towerobj->getRange()) {
+                    if (set.towerobj->getFireRateStatus() < 0.0f && set.towerobj->getCanFire() && calculateDistance(enemy->getPosition(), set.entityobj->getPosition()) <= set.towerobj->getRange() && !enemy->get_components<EnemyAIComponent>()[0]->isAirType()) {
                         auto bullet = set.towerobj->create_tower_bullet(set.entityobj.get(), normalize(enemy->getPosition() - set.entityobj->getPosition()));
                         bullet->get_components<BulletComponent>()[0]->setBulletDamage(set.towerobj->getDamage());
                     }
@@ -405,7 +407,7 @@ void Level3Scene::Update(const double& dt) {
         if (!_airTowerSets.empty() && !Engine::GetActiveScene()->ents.find("enemy").empty()) {
             for (auto enemy : Engine::GetActiveScene()->ents.find("enemy")) {
                 for (auto set : _airTowerSets) {
-                    if (set.towerobj->getFireRateStatus() < 0.0f && set.towerobj->getCanFire() && calculateDistance(enemy->getPosition(), set.entityobj->getPosition()) <= set.towerobj->getRange()) {
+                    if (set.towerobj->getFireRateStatus() < 0.0f && set.towerobj->getCanFire() && calculateDistance(enemy->getPosition(), set.entityobj->getPosition()) <= set.towerobj->getRange() && enemy->get_components<EnemyAIComponent>()[0]->isAirType()) {
                         auto bulletAir = set.towerobj->create_tower_bullet(set.entityobj.get(), normalize(enemy->getPosition() - set.entityobj->getPosition()));
                         bulletAir->get_components<BulletComponent>()[0]->setBulletDamage(set.towerobj->getDamage());
                     }

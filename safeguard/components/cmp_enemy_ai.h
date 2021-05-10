@@ -13,6 +13,8 @@ protected:
 	int _waypointIndex;
 	int _health;
 	bool _gotShot;
+	bool _airtype;
+	bool _bossType;
 	
 
 public:
@@ -27,6 +29,14 @@ public:
   int getHealth();
 
   void setHealth(int hp);
+
+  void setAirType(bool b);
+
+  bool isAirType();
+
+  void setBossType(bool b);
+
+  bool isBossType();
 
   explicit EnemyAIComponent(Entity* p);
 

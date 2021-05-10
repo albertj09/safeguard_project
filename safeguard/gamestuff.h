@@ -38,6 +38,11 @@ struct mappingAirTowerSets {
 
 //std::vector<std::shared_ptr<Entity>> spawn_enemies(int no_of_enemies);
 std::shared_ptr<Entity> spawn_enemy(int level);
+std::shared_ptr<Entity> spawn_enemy_FLYING(int level);
+std::shared_ptr<Entity> spawn_enemy_BOSS(int level);
+std::shared_ptr<Entity> spawn_enemy_FLYING_BOSS(int level);
+std::shared_ptr<Entity> spawn_enemy_BOSS_FINAL(int level);
+std::shared_ptr<Entity> spawn_enemy_FLYING_BOSS_FINAL(int level);
 void createWayPointEntities(int level);
 void create_upgradeInterface_ATTACKTOWER(AttackTower* tower, sf::Vector2f loc);
 void create_upgradeInterface_AIRTOWER(AirTower*	tower, sf::Vector2f loc);
@@ -56,3 +61,4 @@ void executeWave(int wave);
 std::string vsyncInterpreter(bool b);
 std::string resolutionInterpreter(int i);
 void createPauseMenu();
+

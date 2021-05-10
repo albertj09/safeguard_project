@@ -74,7 +74,7 @@ void createBuyInterface()
 	
 
 	//InterfaceArea->setPosition(Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2 + Engine::GetWindow().getSize().y / 4 + Engine::GetWindow().getSize().y / 8));
-	InterfaceArea->setPosition(Engine::GetWindow().getView().getCenter() + Vector2f(0.0f, 200));
+	InterfaceArea->setPosition(Engine::GetWindow().getView().getCenter() + Vector2f(0.0f, 300));
 	//-----------------------------------------------------------------------------
 
 	//-------------------------------PURCHASE ATTACK TOWER BUTTON-------------------------------
@@ -265,6 +265,9 @@ std::shared_ptr<Entity> spawn_enemy(int level) {
 	//ADD ENEMY COMPONENT
 	auto ec = enemy->addComponent<EnemyAIComponent>();
 	ec->load(level);
+	ec->setHealth(100);
+	ec->setAirType(false);
+	ec->setBossType(false);
 
 	//ADD HP TEXT
 	auto healthText = enemy->addComponent<TextComponent>("HP:" + to_string(ec->getHealth()));
@@ -275,6 +278,164 @@ std::shared_ptr<Entity> spawn_enemy(int level) {
 
 	
 	enemy->setPosition(startingPos);
+	return enemy;
+}
+
+std::shared_ptr<Entity> spawn_enemy_FLYING(int level)
+{
+	auto startingPos = LevelSystem::getTilePosition(LevelSystem::findTiles(LevelSystem::START)[0]);
+	auto enemy = Engine::GetActiveScene()->makeEntity();
+	enemy->addTag("enemy");
+
+	auto spritec = enemy->addComponent<SpriteComponent>();
+	auto tex = Resources::get<Texture>("enemies.png");
+	spritec->setTexture(tex);
+	spritec->getSprite().setTextureRect(sf::IntRect(1097, 704, 45, 61));
+	spritec->getSprite().setScale(sf::Vector2f(1.0f, 1.0f));
+
+	//ADD ENEMY COMPONENT
+	auto ec = enemy->addComponent<EnemyAIComponent>();
+	ec->load(level);
+	ec->setHealth(100);
+	ec->setAirType(true);
+	ec->setBossType(false);
+
+	//ADD HP TEXT
+	auto healthText = enemy->addComponent<TextComponent>("HP:" + to_string(ec->getHealth()));
+	healthText->getText()->setOrigin(healthText->getText()->getLocalBounds().width / 2 - 65.0f, healthText->getText()->getLocalBounds().height / 2 + 10.0f);
+	healthText->getText()->setColor(Color::Red);
+	healthText->getText()->setCharacterSize(12.0f);
+	healthText->getText()->setStyle(sf::Text::Regular);
+
+
+	enemy->setPosition(startingPos + Vector2f(0.0f, -15.0f));
+	return enemy;
+}
+
+std::shared_ptr<Entity> spawn_enemy_BOSS(int level)
+{
+	auto startingPos = LevelSystem::getTilePosition(LevelSystem::findTiles(LevelSystem::START)[0]);
+	auto enemy = Engine::GetActiveScene()->makeEntity();
+	enemy->addTag("enemy");
+
+	auto spritec = enemy->addComponent<SpriteComponent>();
+	auto tex = Resources::get<Texture>("enemies.png");
+	spritec->setTexture(tex);
+	spritec->getSprite().setTextureRect(sf::IntRect(975, 658, 35, 35));
+	spritec->getSprite().setScale(sf::Vector2f(3.0f, 3.0f));
+
+	//ADD ENEMY COMPONENT
+	auto ec = enemy->addComponent<EnemyAIComponent>();
+	ec->load(level);
+	ec->setHealth(1000);
+	ec->setAirType(false);
+	ec->setBossType(true); //bosses will take away more base hp
+
+	//ADD HP TEXT
+	auto healthText = enemy->addComponent<TextComponent>("HP:" + to_string(ec->getHealth()));
+	healthText->getText()->setOrigin(healthText->getText()->getLocalBounds().width / 2 - 65.0f, healthText->getText()->getLocalBounds().height / 2 + 10.0f);
+	healthText->getText()->setColor(Color::Red);
+	healthText->getText()->setCharacterSize(12.0f);
+	healthText->getText()->setStyle(sf::Text::Regular);
+
+
+	enemy->setPosition(startingPos + Vector2f(0.0f, -15.0f));
+	return enemy;
+}
+
+std::shared_ptr<Entity> spawn_enemy_FLYING_BOSS(int level)
+{
+	auto startingPos = LevelSystem::getTilePosition(LevelSystem::findTiles(LevelSystem::START)[0]);
+	auto enemy = Engine::GetActiveScene()->makeEntity();
+	enemy->addTag("enemy");
+
+	auto spritec = enemy->addComponent<SpriteComponent>();
+	auto tex = Resources::get<Texture>("enemies.png");
+	spritec->setTexture(tex);
+	spritec->getSprite().setTextureRect(sf::IntRect(1097, 704, 45, 61));
+	spritec->getSprite().setScale(sf::Vector2f(2.0f, 2.0f));
+	spritec->getSprite().setOrigin(Vector2f(spritec->getSprite().getLocalBounds().width / 3, spritec->getSprite().getLocalBounds().height / 3));
+
+	//ADD ENEMY COMPONENT
+	auto ec = enemy->addComponent<EnemyAIComponent>();
+	ec->load(level);
+	ec->setHealth(1000);
+	ec->setAirType(true);
+	ec->setBossType(true);	//bosses will take away more base hp
+
+	//ADD HP TEXT
+	auto healthText = enemy->addComponent<TextComponent>("HP:" + to_string(ec->getHealth()));
+	healthText->getText()->setOrigin(healthText->getText()->getLocalBounds().width / 2 - 65.0f, healthText->getText()->getLocalBounds().height / 2 + 10.0f);
+	healthText->getText()->setColor(Color::Red);
+	healthText->getText()->setCharacterSize(12.0f);
+	healthText->getText()->setStyle(sf::Text::Regular);
+
+
+	enemy->setPosition(startingPos + Vector2f(0.0f, 0.0f));
+	return enemy;
+}
+
+std::shared_ptr<Entity> spawn_enemy_BOSS_FINAL(int level)
+{
+	auto startingPos = LevelSystem::getTilePosition(LevelSystem::findTiles(LevelSystem::START)[0]);
+	auto enemy = Engine::GetActiveScene()->makeEntity();
+	enemy->addTag("enemy");
+
+	auto spritec = enemy->addComponent<SpriteComponent>();
+	auto tex = Resources::get<Texture>("enemies.png");
+	spritec->setTexture(tex);
+	spritec->getSprite().setTextureRect(sf::IntRect(1043, 656, 24, 28));
+	spritec->getSprite().setScale(sf::Vector2f(2.5f, 2.5f));
+	spritec->getSprite().setOrigin(Vector2f(spritec->getSprite().getLocalBounds().width / 3, spritec->getSprite().getLocalBounds().height / 3));
+
+	//ADD ENEMY COMPONENT
+	auto ec = enemy->addComponent<EnemyAIComponent>();
+	ec->load(level);
+	ec->setHealth(1500);
+	ec->setAirType(false);
+	ec->setBossType(true); //bosses will take away more base hp
+
+	//ADD HP TEXT
+	auto healthText = enemy->addComponent<TextComponent>("HP:" + to_string(ec->getHealth()));
+	healthText->getText()->setOrigin(healthText->getText()->getLocalBounds().width / 2 - 65.0f, healthText->getText()->getLocalBounds().height / 2 + 10.0f);
+	healthText->getText()->setColor(Color::Red);
+	healthText->getText()->setCharacterSize(12.0f);
+	healthText->getText()->setStyle(sf::Text::Regular);
+
+
+	enemy->setPosition(startingPos + Vector2f(0.0f, 0.0f));
+	return enemy;
+}
+
+std::shared_ptr<Entity> spawn_enemy_FLYING_BOSS_FINAL(int level)
+{
+	auto startingPos = LevelSystem::getTilePosition(LevelSystem::findTiles(LevelSystem::START)[0]);
+	auto enemy = Engine::GetActiveScene()->makeEntity();
+	enemy->addTag("enemy");
+
+	auto spritec = enemy->addComponent<SpriteComponent>();
+	auto tex = Resources::get<Texture>("enemies.png");
+	spritec->setTexture(tex);
+	spritec->getSprite().setTextureRect(sf::IntRect(1158, 706, 50, 57));
+	spritec->getSprite().setScale(sf::Vector2f(2.0f, 2.0f));
+	spritec->getSprite().setOrigin(Vector2f(spritec->getSprite().getLocalBounds().width / 3, spritec->getSprite().getLocalBounds().height / 3));
+
+	//ADD ENEMY COMPONENT
+	auto ec = enemy->addComponent<EnemyAIComponent>();
+	ec->load(level);
+	ec->setHealth(1300);
+	ec->setAirType(true);
+	ec->setBossType(true);	//bosses will take away more base hp
+
+	//ADD HP TEXT
+	auto healthText = enemy->addComponent<TextComponent>("HP:" + to_string(ec->getHealth()));
+	healthText->getText()->setOrigin(healthText->getText()->getLocalBounds().width / 2 - 65.0f, healthText->getText()->getLocalBounds().height / 2 + 10.0f);
+	healthText->getText()->setColor(Color::Red);
+	healthText->getText()->setCharacterSize(12.0f);
+	healthText->getText()->setStyle(sf::Text::Regular);
+
+
+	enemy->setPosition(startingPos + Vector2f(0.0f, 0.0f));
 	return enemy;
 }
 

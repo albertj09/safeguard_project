@@ -44,4 +44,14 @@ float BulletComponent::getBulletDamage()
 	return this->_dmg;
 }
 
+void BulletComponent::setBulletAir(bool b)
+{
+	this->_air = b;
+}
+
+bool BulletComponent::isBulletAir()
+{
+	return this->_air;
+}
+
 

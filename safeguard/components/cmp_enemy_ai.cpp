@@ -10,7 +10,7 @@ void EnemyAIComponent::update(double dt) {
 
   _direction = normalize(_waypointsEntities[_waypointIndex]->getPosition() - _parent->getPosition());
 
-
+  //navigate from waypoint to waypoint
   if (calculateDistance(_parent->getPosition(), _waypointsEntities[_waypointIndex]->getPosition()) < 0.1f) {
       _waypointIndex++;
   }
@@ -47,7 +47,7 @@ void EnemyAIComponent::load(int level)
         _waypointsEntities.push_back(Engine::GetActiveScene()->ents.find("waypoint4")[0]);
         _waypointIndex = 0;
     }
-    _health = 100;
+    //_health = 100;
 }
 
 void EnemyAIComponent::setGotShot(bool hit)
@@ -73,6 +73,26 @@ void EnemyAIComponent::setHealth(int hp)
     else {
         this->_health = hp;
     }
+}
+
+void EnemyAIComponent::setAirType(bool b)
+{
+    this->_airtype = b;
+}
+
+bool EnemyAIComponent::isAirType()
+{
+    return this->_airtype;
+}
+
+void EnemyAIComponent::setBossType(bool b)
+{
+    this->_bossType = b;
+}
+
+bool EnemyAIComponent::isBossType()
+{
+    return this->_bossType;
 }
 
 

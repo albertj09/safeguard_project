@@ -43,6 +43,7 @@ std::shared_ptr<Entity> AirTower::create_tower_bullet(Entity* tower, sf::Vector2
 
 	direction.y *= -1;
 	auto b = e->addComponent<BulletComponent>(tower, direction, 1000.0f);
+	b->setBulletAir(true);
 
 	//reset the firerate back to the default fire rate
 	_firerate = _baseFireRate;
