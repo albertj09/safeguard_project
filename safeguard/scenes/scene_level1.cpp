@@ -43,7 +43,7 @@ void Level1Scene::Load() {
   //LOAD ENEMY DEATH SOUND
   _bufferSoundDeath.loadFromFile("res/enemy_death.flac");
   _soundDeath.setBuffer(_bufferSoundDeath);
-  _soundDeath.setVolume(10);
+  _soundDeath.setVolume(3);
 
   //LOAD BASE HIT SOUND
   _bufferSoundHit.loadFromFile("res/hit.wav");
@@ -93,6 +93,8 @@ void Level1Scene::Load() {
   _nextScene = false;
   _paused = false;
   _pauseClickTimeout = 0.5f;
+  _goToMainMenu = false;
+
 
   setLoaded(true);
 
@@ -128,19 +130,50 @@ void Level1Scene::UnLoad() {
 
 void Level1Scene::Update(const double& dt) {
 
-    if (_pauseClickTimeout >= 0.0f) _pauseClickTimeout -= dt;
 
-    if (_pauseClickTimeout < 0.0f) {
-        if (Keyboard::isKeyPressed(Keyboard::P)) {
-            if (_paused) {
-                _paused = false;                
+    if (_paused) {
+        if (_pauseClickTimeout >= 0.0f) _pauseClickTimeout -= dt;
+
+
+        if (_pauseClickTimeout < 0.0f) {
+            //if the player presses P again
+            if (Keyboard::isKeyPressed(Keyboard::P)) {              
+                _paused = false;
+                Engine::GetActiveScene()->ents.find("pauseMenu")[0]->setForDelete();
+                Engine::GetActiveScene()->ents.find("continue")[0]->setForDelete();
+                Engine::GetActiveScene()->ents.find("mainMenuButton")[0]->setForDelete();
+                _pauseClickTimeout = 0.5f;
+                _clickTimeout = 0.5f;
             }
-            else {
-                _paused = true;
+            //if the player presses continue
+            if (Mouse::isButtonPressed(Mouse::Left) && Engine::GetActiveScene()->ents.find("continue")[0]->get_components<ButtonComponent>()[0]->isSelected()) {
+                _paused = false;
+                Engine::GetActiveScene()->ents.find("pauseMenu")[0]->setForDelete();
+                Engine::GetActiveScene()->ents.find("continue")[0]->setForDelete();
+                Engine::GetActiveScene()->ents.find("mainMenuButton")[0]->setForDelete();
+                _pauseClickTimeout = 0.5f;
+                _clickTimeout = 0.5f;
             }
-            _pauseClickTimeout = 0.5f;
+            //if the player presses main menu
+            if (Mouse::isButtonPressed(Mouse::Left) && Engine::GetActiveScene()->ents.find("mainMenuButton")[0]->get_components<ButtonComponent>()[0]->isSelected()) {                               
+                _pauseClickTimeout = 0.5f;
+                _clickTimeout = 0.5f;
+                _goToMainMenu = true;
+
+            }
         }
+
+        //update the delta time for the necessary pause menu buttons
+        Engine::GetActiveScene()->ents.find("continue")[0]->get_components<ButtonComponent>()[0]->update(dt);
+        Engine::GetActiveScene()->ents.find("mainMenuButton")[0]->get_components<ButtonComponent>()[0]->update(dt);
+
+        //change to main menu scene
+        if (_goToMainMenu) {
+            Engine::ChangeScene(&menu);
+        }
+
     }
+    
     
 
     if (!_paused) {
@@ -161,6 +194,7 @@ void Level1Scene::Update(const double& dt) {
             _airTowerSets[_indexAir].entityobj->setPosition(cursorPos);
         }
 
+         
 
 
         //ATTACK tower update firerates
@@ -225,6 +259,84 @@ void Level1Scene::Update(const double& dt) {
 
 
 
+
+        
+        //MOVE VIEW AND UI WHEN USING LOWER RESOLUTIONS
+        if (Engine::ResolutionIndex() != 0) {
+
+            View view = Engine::GetWindow().getView(); //get current view
+
+            //DOWN
+            if (Keyboard::isKeyPressed(Keyboard::Down)) {
+                if ((view.getCenter().y + view.getSize().y / 2) < 1080.0f) {
+                    view.setCenter(Vector2f(view.getCenter().x, view.getCenter().y + dt * 300));
+                    Engine::GetActiveScene()->ents.find("money")[0]->setPosition(Engine::GetActiveScene()->ents.find("money")[0]->getPosition() + Vector2f(0.0f, dt * 300));
+                    Engine::GetActiveScene()->ents.find("wave")[0]->setPosition(Engine::GetActiveScene()->ents.find("wave")[0]->getPosition() + Vector2f(0.0f, dt * 300));
+                    Engine::GetActiveScene()->ents.find("level")[0]->setPosition(Engine::GetActiveScene()->ents.find("level")[0]->getPosition() + Vector2f(0.0f, dt * 300));
+                    Engine::GetWindow().setView(view);
+                    //Match buying interface with view
+                    if (!Engine::GetActiveScene()->ents.find("buyInterface").empty()) {
+                        Engine::GetActiveScene()->ents.find("buyInterface")[0]->setPosition(Engine::GetActiveScene()->ents.find("buyInterface")[0]->getPosition() + Vector2f(0.0f, dt * 300));
+                        Engine::GetActiveScene()->ents.find("purchase_tower_button_ATTACK")[0]->setPosition(Engine::GetActiveScene()->ents.find("purchase_tower_button_ATTACK")[0]->getPosition() + Vector2f(0.0f, dt * 300));
+                        Engine::GetActiveScene()->ents.find("purchase_tower_button_AIR")[0]->setPosition(Engine::GetActiveScene()->ents.find("purchase_tower_button_AIR")[0]->getPosition() + Vector2f(0.0f, dt * 300));
+                    }
+                }
+            }
+            //UP
+            if (Keyboard::isKeyPressed(Keyboard::Up)) {
+                if ((view.getCenter().y - view.getSize().y / 2) > 0.0f) {
+                    view.setCenter(Vector2f(view.getCenter().x, view.getCenter().y - dt * 300));
+                    Engine::GetActiveScene()->ents.find("money")[0]->setPosition(Engine::GetActiveScene()->ents.find("money")[0]->getPosition() + Vector2f(0.0f, -dt * 300));
+                    Engine::GetActiveScene()->ents.find("wave")[0]->setPosition(Engine::GetActiveScene()->ents.find("wave")[0]->getPosition() + Vector2f(0.0f, -dt * 300));
+                    Engine::GetActiveScene()->ents.find("level")[0]->setPosition(Engine::GetActiveScene()->ents.find("level")[0]->getPosition() + Vector2f(0.0f, -dt * 300));
+                    Engine::GetWindow().setView(view);
+                    //Match buying interface with view
+                    if (!Engine::GetActiveScene()->ents.find("buyInterface").empty()) {
+                        Engine::GetActiveScene()->ents.find("buyInterface")[0]->setPosition(Engine::GetActiveScene()->ents.find("buyInterface")[0]->getPosition() + Vector2f(0.0f, -dt * 300));
+                        Engine::GetActiveScene()->ents.find("purchase_tower_button_ATTACK")[0]->setPosition(Engine::GetActiveScene()->ents.find("purchase_tower_button_ATTACK")[0]->getPosition() + Vector2f(0.0f, -dt * 300));
+                        Engine::GetActiveScene()->ents.find("purchase_tower_button_AIR")[0]->setPosition(Engine::GetActiveScene()->ents.find("purchase_tower_button_AIR")[0]->getPosition() + Vector2f(0.0f, -dt * 300));
+                    }
+                }
+            }
+            //RIGHT
+            if (Keyboard::isKeyPressed(Keyboard::Right)) {
+                if ((view.getCenter().x + view.getSize().x / 2) < 1920.0f) {
+                    view.setCenter(Vector2f(view.getCenter().x + dt * 300, view.getCenter().y));
+                    Engine::GetActiveScene()->ents.find("money")[0]->setPosition(Engine::GetActiveScene()->ents.find("money")[0]->getPosition() + Vector2f(dt * 300, 0.0f));
+                    Engine::GetActiveScene()->ents.find("wave")[0]->setPosition(Engine::GetActiveScene()->ents.find("wave")[0]->getPosition() + Vector2f(dt * 300, 0.0f));
+                    Engine::GetActiveScene()->ents.find("level")[0]->setPosition(Engine::GetActiveScene()->ents.find("level")[0]->getPosition() + Vector2f(dt * 300, 0.0f));
+                    Engine::GetWindow().setView(view);
+                    //Match buying interface with view
+                    if (!Engine::GetActiveScene()->ents.find("buyInterface").empty()) {
+                        Engine::GetActiveScene()->ents.find("buyInterface")[0]->setPosition(Engine::GetActiveScene()->ents.find("buyInterface")[0]->getPosition() + Vector2f(dt * 300, 0.0f));
+                        Engine::GetActiveScene()->ents.find("purchase_tower_button_ATTACK")[0]->setPosition(Engine::GetActiveScene()->ents.find("purchase_tower_button_ATTACK")[0]->getPosition() + Vector2f(dt * 300, 0.0f));
+                        Engine::GetActiveScene()->ents.find("purchase_tower_button_AIR")[0]->setPosition(Engine::GetActiveScene()->ents.find("purchase_tower_button_AIR")[0]->getPosition() + Vector2f(dt * 300, 0.0f));
+                    }
+                }
+            }
+            //LEFT
+            if (Keyboard::isKeyPressed(Keyboard::Left)) {
+                if ((view.getCenter().x - view.getSize().x / 2) > 0.0f) {
+                    view.setCenter(Vector2f(view.getCenter().x - dt * 300, view.getCenter().y));
+                    Engine::GetActiveScene()->ents.find("money")[0]->setPosition(Engine::GetActiveScene()->ents.find("money")[0]->getPosition() + Vector2f(-dt * 300, 0.0f));
+                    Engine::GetActiveScene()->ents.find("wave")[0]->setPosition(Engine::GetActiveScene()->ents.find("wave")[0]->getPosition() + Vector2f(-dt * 300, 0.0f));
+                    Engine::GetActiveScene()->ents.find("level")[0]->setPosition(Engine::GetActiveScene()->ents.find("level")[0]->getPosition() + Vector2f(-dt * 300, 0.0f));
+                    Engine::GetWindow().setView(view);
+                    //Match buying interface with view
+                    if (!Engine::GetActiveScene()->ents.find("buyInterface").empty()) {
+                        Engine::GetActiveScene()->ents.find("buyInterface")[0]->setPosition(Engine::GetActiveScene()->ents.find("buyInterface")[0]->getPosition() + Vector2f(-dt * 300, 0.0f));
+                        Engine::GetActiveScene()->ents.find("purchase_tower_button_ATTACK")[0]->setPosition(Engine::GetActiveScene()->ents.find("purchase_tower_button_ATTACK")[0]->getPosition() + Vector2f(-dt * 300, 0.0f));
+                        Engine::GetActiveScene()->ents.find("purchase_tower_button_AIR")[0]->setPosition(Engine::GetActiveScene()->ents.find("purchase_tower_button_AIR")[0]->getPosition() + Vector2f(-dt * 300, 0.0f));
+                    }
+                }
+            }                     
+        }
+
+        
+
+
+
+        
 
 
 
@@ -301,6 +413,13 @@ void Level1Scene::Update(const double& dt) {
 
 
         if (_clickTimeout < 0.0f) {
+
+            if (Keyboard::isKeyPressed(Keyboard::P)) {
+                _paused = true;
+                createPauseMenu();
+                _clickTimeout = 0.5;
+                _pauseClickTimeout = 0.5;
+            }
 
 
             //Toggle open/close the buying interface for the towers
@@ -703,8 +822,7 @@ void Level1Scene::Update(const double& dt) {
             Engine::ChangeScene((Scene*)&level2);
         }
     }
-
-    
+  
     
 }
 

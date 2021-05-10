@@ -18,6 +18,19 @@ static float loadingspinner = 0.f;
 static float loadingTime;
 static RenderWindow* _window;
 
+bool Engine::_fullscreen = false;   //resolve the external
+bool Engine::_changeResolution = false; //resolve the external
+int Engine::_resolutionIndex = 0;   //resolve the external
+bool Engine::_vsyncStatus = false;
+
+vector<pair<int, int>> Engine::resolutions{
+    //16:9 resolutions
+    make_pair(1920, 1080),  //0
+    make_pair(1600, 900),   //1
+    make_pair(1366, 768),   //2
+    make_pair(1280, 720),   //3
+};
+
 void Loading_update(float dt, const Scene* const scn) {
   //  cout << "Eng: Loading Screen\n";
   if (scn->isLoaded()) {
@@ -93,10 +106,25 @@ void Engine::Start(unsigned int width, unsigned int height,
       if (event.type == Event::Closed) {
         window.close();
       }
+      if (event.type == sf::Event::KeyReleased)
+      {
+          if (event.key.code == sf::Keyboard::F11)
+          {
+              _fullscreen = !_fullscreen;
+              window.create(VideoMode(width, height), gameName, (_fullscreen ? Style::Fullscreen : Style::Titlebar | Style::Close));
+              _window = &window;
+          }
+      }
+      if (_changeResolution)
+      {
+          window.create(VideoMode(resolutions[_resolutionIndex].first, resolutions[_resolutionIndex].second), gameName, (_fullscreen ? Style::Fullscreen : Style::Titlebar | Style::Close));
+          _window = &window;
+          _changeResolution = false;
+      }
     }
-    if (Keyboard::isKeyPressed(Keyboard::Escape)) {
+    /*if (Keyboard::isKeyPressed(Keyboard::Escape)) {
       window.close();
-    }
+    }*/
 
     window.clear();
     Update();
@@ -118,7 +146,11 @@ std::shared_ptr<Entity> Scene::makeEntity() {
   return std::move(e);
 }
 
-void Engine::setVsync(bool b) { _window->setVerticalSyncEnabled(b); }
+
+void Engine::setVsync(bool b) { 
+    _window->setVerticalSyncEnabled(b);
+    _vsyncStatus = b;
+}
 
 void Engine::ChangeScene(Scene* s) {
   cout << "Eng: changing scene: " << s << endl;
@@ -175,6 +207,20 @@ void Scene::UnLoad() {
 Scene* Engine::GetActiveScene()
 {
     return _activeScene;
+}
+
+void Engine::ChangeResolution(int index)
+{
+    
+   _changeResolution = true;
+   _resolutionIndex = index;
+   
+     
+}
+
+void Engine::setFullscreen(bool b)
+{
+    _fullscreen = b;
 }
 
 void Scene::LoadAsync() { _loaded_future = std::async(&Scene::Load, this); }

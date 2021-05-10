@@ -26,6 +26,7 @@ private:
 	//Whether the selection sound has been played
 	bool _selectionSoundPlayedStart;
 	bool _selectionSoundPlayedExit;
+	bool _selectionSoundPlayedOptions;
 
 
 	sf::Font _font1;
@@ -33,6 +34,7 @@ private:
 	sf::Texture _background;
 	float _clickMenuTimeout;
 	bool _startGame;
+	bool _quitGame;
 	float _initialTimeout;
 	
 };

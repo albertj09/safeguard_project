@@ -17,7 +17,7 @@ using namespace sf;
 
 void Level3Scene::Load() {
     cout << " Scene 1 Load" << endl;
-    ls::loadLevelFile("res/level1TEST.txt", 32.0f);
+    ls::loadLevelFile("res/level_3.txt", 32.0f);
 
 
 
@@ -43,7 +43,7 @@ void Level3Scene::Load() {
     //LOAD ENEMY DEATH SOUND
     _bufferSoundDeath.loadFromFile("res/enemy_death.flac");
     _soundDeath.setBuffer(_bufferSoundDeath);
-    _soundDeath.setVolume(10);
+    _soundDeath.setVolume(3);
 
     //LOAD BASE HIT SOUND
     _bufferSoundHit.loadFromFile("res/hit.wav");

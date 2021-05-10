@@ -53,3 +53,6 @@ void createMoneyEntity();
 void createWaveEntity(int wave);
 void createLevelEntity(int level);
 void executeWave(int wave);
+std::string vsyncInterpreter(bool b);
+std::string resolutionInterpreter(int i);
+void createPauseMenu();

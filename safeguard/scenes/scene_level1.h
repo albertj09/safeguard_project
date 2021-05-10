@@ -116,7 +116,7 @@ private:
 	int _money;
 
 	//MISC
-	int _wave_1_amount = 2;
+	int _wave_1_amount = 10;
 	int _wave_2_amount = 15;
 	int _wave_3_amount = 20;
 
@@ -127,6 +127,7 @@ private:
 	
 	float _pauseClickTimeout;
 	bool _paused;
+	bool _goToMainMenu;
 		
 	
 };

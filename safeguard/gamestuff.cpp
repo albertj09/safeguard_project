@@ -71,7 +71,10 @@ void createBuyInterface()
 	shape->getShape().setOrigin(shape->getShape().getLocalBounds().width / 2, shape->getShape().getLocalBounds().height / 2);
 	shape->getShape().setFillColor(Color::Color(255, 255, 255, 130));
 
-	InterfaceArea->setPosition(Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2 + Engine::GetWindow().getSize().y / 4 + Engine::GetWindow().getSize().y / 8));
+	
+
+	//InterfaceArea->setPosition(Vector2f(Engine::GetWindow().getSize().x / 2, Engine::GetWindow().getSize().y / 2 + Engine::GetWindow().getSize().y / 4 + Engine::GetWindow().getSize().y / 8));
+	InterfaceArea->setPosition(Engine::GetWindow().getView().getCenter() + Vector2f(0.0f, 200));
 	//-----------------------------------------------------------------------------
 
 	//-------------------------------PURCHASE ATTACK TOWER BUTTON-------------------------------
@@ -280,6 +283,85 @@ void executeWave(int wave)
 
 }
 
+std::string vsyncInterpreter(bool b)
+{
+	if (b) {
+		return "ON";
+	}
+	else {
+		return "OFF";
+	}
+}
+
+std::string resolutionInterpreter(int i)
+{
+	return to_string(Engine::resolutions[i].first) + "x" + to_string(Engine::resolutions[i].second);
+}
+
+void createPauseMenu()
+{
+	
+	{
+		auto pauseMenu = Engine::GetActiveScene()->makeEntity();
+		pauseMenu->addTag("pauseMenu");
+
+		auto shapeMenu = pauseMenu->addComponent<ShapeComponent>();
+		shapeMenu->setShape<RectangleShape>(Vector2f(400.0f, 600.0f));
+		shapeMenu->getShape().setOrigin(shapeMenu->getShape().getLocalBounds().width / 2, shapeMenu->getShape().getLocalBounds().height / 2);
+		shapeMenu->getShape().setFillColor(Color::Color(255, 255, 255, 220));
+
+		auto pmt = pauseMenu->addComponent<TextComponent>("PAUSED");
+		pmt->getText()->setOrigin(pmt->getText()->getLocalBounds().width / 2 + 125.0f, pmt->getText()->getLocalBounds().height / 2 + 300.0f);
+		pmt->getText()->setCharacterSize(100.0f);
+		pmt->getText()->setColor(Color::Color(196, 144, 120, 255));
+
+		pauseMenu->setPosition(Engine::GetWindow().getView().getCenter());
+	}
+
+	//CONTINUE
+	{
+		auto continueBtn = Engine::GetActiveScene()->makeEntity();
+		continueBtn->addTag("continue");
+
+		auto shape = continueBtn->addComponent<ShapeComponent>();
+		shape->setShape<RectangleShape>(Vector2f(320.0f, 100.0f));
+		shape->getShape().setOrigin(shape->getShape().getLocalBounds().width / 2, shape->getShape().getLocalBounds().height / 2);
+		shape->getShape().setScale(Vector2f(0.7, 0.7));
+
+		auto t1 = continueBtn->addComponent<TextComponent>("CONTINUE");
+		t1->getText()->setOrigin(t1->getText()->getLocalBounds().width / 2 + 25.0f, t1->getText()->getLocalBounds().height / 2 + 15.0f);
+		t1->getText()->setCharacterSize(40.0f);
+		t1->getText()->setStyle(Text::Bold);
+		t1->getText()->setColor(Color::Color(196, 144, 120, 255));
+
+		auto buttonContinue = continueBtn->addComponent<ButtonComponent>(shape, t1);
+		continueBtn->setPosition(Vector2f(Engine::GetActiveScene()->ents.find("pauseMenu")[0]->getPosition().x, Engine::GetActiveScene()->ents.find("pauseMenu")[0]->getPosition().y - 100.0f));
+	}
+
+	//MAIN MENU
+	{
+		auto menuBtn = Engine::GetActiveScene()->makeEntity();
+		menuBtn->addTag("mainMenuButton");
+
+		auto shape = menuBtn->addComponent<ShapeComponent>();
+		shape->setShape<RectangleShape>(Vector2f(350.0f, 100.0f));
+		shape->getShape().setOrigin(shape->getShape().getLocalBounds().width / 2, shape->getShape().getLocalBounds().height / 2);
+		shape->getShape().setScale(Vector2f(0.7, 0.7));
+
+		auto t1 = menuBtn->addComponent<TextComponent>("MAIN MENU");
+		t1->getText()->setOrigin(t1->getText()->getLocalBounds().width / 2 + 33.0f, t1->getText()->getLocalBounds().height / 2 + 15.0f);
+		t1->getText()->setCharacterSize(40.0f);
+		t1->getText()->setStyle(Text::Bold);
+		t1->getText()->setColor(Color::Color(196, 144, 120, 255));
+
+		auto buttonMenu = menuBtn->addComponent<ButtonComponent>(shape, t1);
+		menuBtn->setPosition(Vector2f(Engine::GetActiveScene()->ents.find("pauseMenu")[0]->getPosition().x, Engine::GetActiveScene()->ents.find("pauseMenu")[0]->getPosition().y));
+	}
+
+	
+
+}
+
 
 
 void createBaseEntity()
@@ -321,7 +403,7 @@ void createMoneyEntity()
 	moneyText->getText()->setCharacterSize(25.0f);
 	moneyText->getText()->setStyle(sf::Text::Bold);
 
-	money->setPosition(Vector2f(Engine::GetWindow().getSize().x / 10 - 80.0f, Engine::GetWindow().getSize().y / 2 + Engine::GetWindow().getSize().y / 4 + Engine::GetWindow().getSize().y / 8));
+	money->setPosition(Vector2f(Engine::GetWindow().getSize().x / 10 - 20.0f, Engine::GetWindow().getSize().y / 2 + Engine::GetWindow().getSize().y / 4 + Engine::GetWindow().getSize().y / 8 - 50.0f));
 	
 }
 
@@ -341,7 +423,7 @@ void createWaveEntity(int wave)
 	waveText->getText()->setCharacterSize(25.0f);
 	waveText->getText()->setStyle(sf::Text::Bold);
 
-	waveEntity->setPosition(Vector2f(Engine::GetWindow().getSize().x / 10 - 80.0f, Engine::GetWindow().getSize().y / 2 - Engine::GetWindow().getSize().y / 4 - Engine::GetWindow().getSize().y / 8 - 30.0f));
+	waveEntity->setPosition(Vector2f(Engine::GetWindow().getSize().x / 10 - 20.0f, Engine::GetWindow().getSize().y / 2 - Engine::GetWindow().getSize().y / 4 - 60));
 }
 
 void createLevelEntity(int level)
@@ -360,7 +442,7 @@ void createLevelEntity(int level)
 	levelText->getText()->setCharacterSize(25.0f);
 	levelText->getText()->setStyle(sf::Text::Bold);
 
-	levelEntity->setPosition(Vector2f(Engine::GetWindow().getSize().x / 10 - 80.0f, Engine::GetWindow().getSize().y / 2 - Engine::GetWindow().getSize().y / 4 - Engine::GetWindow().getSize().y / 8 - 100.0f));
+	levelEntity->setPosition(Vector2f(Engine::GetWindow().getSize().x / 10 - 20.0f, Engine::GetWindow().getSize().y / 2 - Engine::GetWindow().getSize().y / 4 - 130));
 
 }
 

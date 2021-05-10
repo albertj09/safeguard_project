@@ -38,12 +38,21 @@ public:
   static sf::Vector2u getWindowSize();
   static void setVsync(bool b);
   static Scene* GetActiveScene();
+  static std::vector<std::pair<int, int>> resolutions; //Vector for resolutions. I will only include a few key resolutions
+  static void ChangeResolution(int index);
+  static int ResolutionIndex() { return _resolutionIndex; }
+  static bool getVsyncStatus() { return _vsyncStatus; }
+  static void setFullscreen(bool b);
 
 private:
   static Scene* _activeScene;
   static std::string _gameName;
   static void Update();
   static void Render(sf::RenderWindow& window);
+  static bool _fullscreen;
+  static bool _changeResolution;
+  static int _resolutionIndex;
+  static bool _vsyncStatus;
 };
 
 namespace timing {
